@@ -14,24 +14,35 @@ body {
 }
 
 header {
-    background: #333;
+    background: #13294B;
     color: #fff;
     padding: 1rem 0 .5rem 0;
+    display: inline;
 }
 
 header h1 {
     margin-left: 1rem;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+header p {
+    float: right;
+    margin-left: 1rem;
+    margin-right: 1rem;
+    vertical-align: center;
 }
 nav {
   margin: 0px;
   padding: 0px;
   line-height: 1.4;
   overflow: hidden;
+  -webkit-box-shadow: 0px 10px 20px 0px rgba(204,204,204,1);
+  -moz-box-shadow: 0px 10px 20px 0px rgba(204,204,204,1);
+  box-shadow: 0px 10px 20px 0px rgba(204,204,204,1);
 }
 nav ul {
     display: flex;
     list-style: none;
-      background: linear-gradient(to bottom, #d1d1d1, #888888);
+    background: linear-gradient(to bottom, #d1d1d1, #888888);
 }
 
 nav ul li a {
@@ -54,8 +65,13 @@ main {
 section {
     padding: 1rem;
     margin-bottom: 1rem;
+    -webkit-box-shadow: 0px 0px 10px 5px rgba(204,204,204,0.25);
+    -moz-box-shadow: 0px 0px 10px 5px rgba(204,204,204,0.25);
+    box-shadow: 0px 0px 10px 5px rgba(204,204,204,0.25);
 }
-
+section h2 {
+  border-bottom: 5px solid rgba(204,204,204,0.50);
+}
 .roundboxgrey {
     border-radius: 20px;
     background: #ccc;
@@ -88,5 +104,4 @@ footer {
 footer p {
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
     color: #13294B;
-
 }
