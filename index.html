@@ -17,26 +17,68 @@
     </header>
             <nav>
             <ul>
-                <li><a href="#home">Home</a></li>
+                <li><a href="inddex.html">Home</a></li>
                 <li><a href="#about">About</a></li>
+                <li><a href="#goodies">Goodies</a></li>
                 <li><a href="#contact">Contact</a></li>
             </ul>
         </nav>
     <main>
         <section id="home">
             <h2>Home</h2>
-            <p>Welcome to my fluid website!</p>
-            <div class="roundboxgrey">Three values - border-radius: 15px 50px 30px; (first value applies to top-left corner, second value applies to top-right and bottom-left corners, and third value applies to bottom-right corner):</div>
+            <h3>Crafting Digital Experiences</h3>
+            <p>A portfolio showcasing my passion for design and development.</p>
+            <div class="roundboxgrey"><h4>Topper Goes Here</h4>
+              <p> Welcome! I'm [Your Name], a [Your Title] specializing in [Your Specializations].  Explore my work below and see how I can help bring your vision to life.  Let's connect!
+              </p>
+              </div>
         </section>
         <section id="about">
-            <h2>About</h2>
-            <p>This is an example of a fluid website design template using CSS and JavaScript.</p>
-            <div class="roundboxblue">Three values - border-radius: 15px 50px 30px; (first value applies to top-left corner, second value applies to top-right and bottom-left corners, and third value applies to bottom-right corner):</div>
+            <h2>About Me</h2>
+            <div class="roundboxblue">
+            <p>I'm [Your Name], and I'm passionate about creating beautiful and functional digital experiences. With [Number] years of experience in [Your Field], I've honed my skills in [List Key Skills, e.g., UI/UX design, web development, graphic design]. I'm dedicated to delivering high-quality work that exceeds expectations.  I believe in collaboration and clear communication, ensuring a smooth and enjoyable process for every client.  I'm always eager to learn and explore new technologies to stay at the forefront of the industry.
+            </p>
+            </div>
+        </section>
+            <section id="goodies">
+            <h2>Goodies</h2>
+            <h3>My Recent Work</h3>
+          <p>(For each project, include a visually appealing image or mockup and the following information):</p>
+<div class="roundboxgrey">
+            <h4>Project Title:** [Project Name]</h4>
+          <p>
+            **Client:** [Client Name or "Personal Project"]
+            **Description:** [Brief description of the project and your role. Highlight key technologies used and results achieved.]
+            **Link:** (Optional) Link to a live project or case study.
+        </p>
+</div>
         </section>
         <section id="contact">
             <h2>Contact</h2>
-            <p>Please feel free to reach out to me!</p>
-            <div class="roundboxnavy">Three values - border-radius: 15px 50px 30px; (first value applies to top-left corner, second value applies to top-right and bottom-left corners, and third value applies to bottom-right corner):</div>
+            <h3>Please feel free to reach out to me!</h3>
+            <div class="roundboxnavy"><p>Body:  Ready to discuss your next project?  Feel free to reach out using the form below or via email at [Your Email Address].
+
+Form:  Include a simple contact form with fields for Name, Email, and Message.
+</p></div>
+<div class="roundboxgrey"><div class="container"> <form id="contactForm" action="submit.php" method="post">  <!-- Replace submit.php with your backend script -->
+      <div class="form-group">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required>
+      </div>
+      <div class="form-group">
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+      </div>
+      <div class="form-group">
+        <label for="topic">Topic:</label>
+        <input type="text" id="topic" name="topic" required>
+      </div>
+      <div class="form-group">
+        <label for="message">Message:</label>
+        <textarea id="message" name="message" required></textarea>
+      </div>
+      <button type="submit">Submit</button>
+    </form></div></div>
         </section>
     </main>
     <footer>
