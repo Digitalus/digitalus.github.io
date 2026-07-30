@@ -23,8 +23,10 @@ body {
   margin: 0;
   min-height: 100vh;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 20px;
   background: radial-gradient(circle at 50% 20%, #3a3a40 0%, #1c1c1e 70%);
   font-family: 'Segoe UI', Roboto, -apple-system, sans-serif;
   padding: 24px;
@@ -153,8 +155,63 @@ body {
   grid-column: span 1;
 }
 
+.howto {
+  width: 320px;
+  background: linear-gradient(160deg, var(--body-case-edge), var(--body-case) 40%);
+  border-radius: 16px;
+  padding: 18px 20px 20px;
+  box-shadow:
+    0 15px 30px var(--shadow-deep),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  color: #cfced4;
+}
+
+.howto__title {
+  margin: 0 0 10px;
+  font-size: 13px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--screen-glow);
+  font-weight: 700;
+}
+
+.howto__list {
+  margin: 0 0 14px;
+  padding-left: 20px;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.howto__list li + li {
+  margin-top: 4px;
+}
+
+.howto__list strong {
+  color: #f1efe9;
+}
+
+.howto__note {
+  margin: 0;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 13px;
+  line-height: 1.6;
+  color: #a5a4ab;
+}
+
+.howto__note code,
+.howto__note kbd {
+  background: rgba(255, 159, 28, 0.12);
+  color: var(--screen-glow);
+  border-radius: 4px;
+  padding: 1px 6px;
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+}
+
 @media (max-width: 360px) {
-  .calc {
+  .calc,
+  .howto {
     width: 100%;
   }
   .calc__display {

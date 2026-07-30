@@ -11,7 +11,7 @@
   <main class="calc" aria-label="Calculator">
 
     <div class="calc__brand">
-      <span class="calc__brand-name">MODEL&nbsp;01</span>
+      <span class="calc__brand-name">POWERED&nbsp;BY&nbsp;CLAUDE</span>
       <span class="calc__brand-dot" aria-hidden="true"></span>
     </div>
 
@@ -21,32 +21,46 @@
     </div>
 
     <div class="calc__pad">
-      <button class="key key--fn" data-action="clear">C</button>
-      <button class="key key--fn" data-action="sign">±</button>
-      <button class="key key--fn" data-action="percent">%</button>
-      <button class="key key--op" data-action="operator" data-op="÷">÷</button>
+      <button class="key key--fn" data-action="clear" title="Clear (Esc)">C</button>
+      <button class="key key--fn" data-action="sign" title="Toggle positive/negative">±</button>
+      <button class="key key--fn" data-action="percent" title="Convert to percent">%</button>
+      <button class="key key--op" data-action="operator" data-op="÷" title="Divide (/)">÷</button>
 
-      <button class="key key--num" data-num="7">7</button>
-      <button class="key key--num" data-num="8">8</button>
-      <button class="key key--num" data-num="9">9</button>
-      <button class="key key--op" data-action="operator" data-op="×">×</button>
+      <button class="key key--num" data-num="7" title="7">7</button>
+      <button class="key key--num" data-num="8" title="8">8</button>
+      <button class="key key--num" data-num="9" title="9">9</button>
+      <button class="key key--op" data-action="operator" data-op="×" title="Multiply (*)">×</button>
 
-      <button class="key key--num" data-num="4">4</button>
-      <button class="key key--num" data-num="5">5</button>
-      <button class="key key--num" data-num="6">6</button>
-      <button class="key key--op" data-action="operator" data-op="−">−</button>
+      <button class="key key--num" data-num="4" title="4">4</button>
+      <button class="key key--num" data-num="5" title="5">5</button>
+      <button class="key key--num" data-num="6" title="6">6</button>
+      <button class="key key--op" data-action="operator" data-op="−" title="Subtract (-)">−</button>
 
-      <button class="key key--num" data-num="1">1</button>
-      <button class="key key--num" data-num="2">2</button>
-      <button class="key key--num" data-num="3">3</button>
-      <button class="key key--op" data-action="operator" data-op="+">+</button>
+      <button class="key key--num" data-num="1" title="1">1</button>
+      <button class="key key--num" data-num="2" title="2">2</button>
+      <button class="key key--num" data-num="3" title="3">3</button>
+      <button class="key key--op" data-action="operator" data-op="+" title="Add (+)">+</button>
 
-      <button class="key key--num key--zero" data-num="0">0</button>
-      <button class="key key--num" data-action="decimal">.</button>
-      <button class="key key--eq" data-action="equals">=</button>
+      <button class="key key--num key--zero" data-num="0" title="0">0</button>
+      <button class="key key--num" data-action="decimal" title="Decimal point (.)">.</button>
+      <button class="key key--eq" data-action="equals" title="Calculate result (Enter)">=</button>
     </div>
 
   </main>
+
+  <aside class="howto" aria-label="How to use the calculator">
+    <h2 class="howto__title">How to use</h2>
+    <ol class="howto__list">
+      <li>Click a number key to start entering a value.</li>
+      <li>Click an operator (÷ × − +) to choose your operation.</li>
+      <li>Enter the second number, then click <strong>=</strong> to see the result.</li>
+      <li>Click <strong>C</strong> at any time to clear and start over.</li>
+      <li>Use <strong>±</strong> to flip the sign, or <strong>%</strong> to convert to a percent.</li>
+    </ol>
+    <p class="howto__note">
+      Tip: keyboard input is supported. Type numbers, <code>+ − × ÷</code>, press <kbd>Enter</kbd> to calculate, <kbd>Backspace</kbd> to delete a digit, and <kbd>Esc</kbd> to clear.
+    </p>
+  </aside>
 
 <script src="script.js"></script>
 </body>
