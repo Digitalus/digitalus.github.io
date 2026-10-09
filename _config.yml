@@ -1,0 +1,13 @@
+title: Digitalus Maximus
+author: Digitalus
+description: Coder, gamer, designer. Portfolio and blog.
+email: you@example.com
+url: "https://digitalus.github.io"
+baseurl: ""
+permalink: /blog/:title/
+markdown: kramdown
+exclude:
+  - AGENTS.md
+  - Gemfile
+  - Gemfile.lock
+  - README.md

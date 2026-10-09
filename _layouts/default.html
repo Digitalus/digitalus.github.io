@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="{{ page.description | default: site.description | strip_html | strip_newlines | escape }}">
+    <title>{% if page.title %}{{ page.title }} | {% endif %}{{ site.title }}</title>
+    <script>
+        (function () {
+            var saved = localStorage.getItem('theme');
+            var dark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            document.documentElement.setAttribute('data-theme', saved || (dark ? 'dark' : 'light'));
+        })();
+    </script>
+    <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        canvas: 'rgb(var(--canvas) / <alpha-value>)',
+                        surface: 'rgb(var(--surface) / <alpha-value>)',
+                        ink: 'rgb(var(--ink) / <alpha-value>)',
+                        muted: 'rgb(var(--muted) / <alpha-value>)',
+                        line: 'rgb(var(--line) / <alpha-value>)',
+                        brand: 'rgb(var(--brand) / <alpha-value>)',
+                        navy: 'rgb(var(--navy) / <alpha-value>)',
+                        sky: 'rgb(var(--sky) / <alpha-value>)',
+                        accent: 'rgb(var(--accent) / <alpha-value>)',
+                        light: 'rgb(var(--light) / <alpha-value>)',
+                        'title-end': 'rgb(var(--title-end) / <alpha-value>)',
+                        gray: {
+                            50: 'rgb(var(--gray-50) / <alpha-value>)',
+                            100: 'rgb(var(--gray-100) / <alpha-value>)',
+                            200: 'rgb(var(--gray-200) / <alpha-value>)',
+                            300: 'rgb(var(--gray-300) / <alpha-value>)',
+                            400: 'rgb(var(--gray-400) / <alpha-value>)',
+                            500: 'rgb(var(--gray-500) / <alpha-value>)',
+                            600: 'rgb(var(--gray-600) / <alpha-value>)',
+                            700: 'rgb(var(--gray-700) / <alpha-value>)',
+                            800: 'rgb(var(--gray-800) / <alpha-value>)',
+                            900: 'rgb(var(--gray-900) / <alpha-value>)'
+                        }
+                    }
+                }
+            }
+        };
+    </script>
+    <link rel="stylesheet" href="{{ '/css/styles.css' | relative_url }}">
+</head>
+<body id="top" class="flex min-h-screen flex-col bg-canvas font-sans text-ink antialiased">
+    {% include header.html %}
+    <main class="flex-1">
+        {{ content }}
+    </main>
+    {% include footer.html %}
+    <a href="#top" class="fixed right-0 top-1/2 z-40 -translate-y-1/2 rounded-l-lg bg-accent px-2.5 py-4 text-sm font-semibold text-navy shadow-lg transition hover:pr-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-navy" aria-label="Back to top">
+        <span class="flex flex-col items-center gap-2">
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 19V5m0 0l-6 6m6-6l6 6"/>
+            </svg>
+            <span class="[writing-mode:vertical-rl]">Top</span>
+        </span>
+    </a>
+    <script src="{{ '/js/scripts.js' | relative_url }}"></script>
+</body>
+</html>

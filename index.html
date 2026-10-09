@@ -1,92 +1,116 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <meta http-equiv="Pragma" content="no-cache">
-    <meta http-equiv="Expires" content="0">
-    <meta http-equiv="Robots" content="index, follow">
-    <title>Digitalus...coder, gamer, designer</title>
-    <link rel="stylesheet" href="css/styles.css">
-    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.14.1/themes/smoothness/jquery-ui.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.14.1/jquery-ui.min.js"></script>
-</head>
-<body>
-    <header>
-       <p>coder, gamer, designer...</p><h1>Digitalus</h1>
-    </header>
-            <nav>
-            <ul>
-                <li><a href="index.html">Home</a></li>
-                <li><a href="#about">About</a></li>
-                <li><a href="#goodies">Goodies</a></li>
-                <li><a href="#contact">Contact</a></li>
-            </ul>
-        </nav>
-    <main>
-        <section id="home">
-            <h2>Home</h2>
-            <h3>Crafting Digital Experiences</h3>
-            <p>A portfolio showcasing my passion for design and development.</p>
-            <div class="roundboxgrey"><h4>Topper Goes Here</h4>
-              <p> Welcome! I'm [Your Name], a [Your Title] specializing in [Your Specializations].  Explore my work below and see how I can help bring your vision to life.  Let's connect!
-              </p>
-              </div>
-        </section>
-        <section id="about">
-            <h2>About Me</h2>
-            <h3>Who is Digitalus?</h3>
-            <p>Find out more about the man, the myth, the legend...</p>
-            <div class="roundboxblue">
-            <p>I'm [Your Name], and I'm passionate about creating beautiful and functional digital experiences. With [Number] years of experience in [Your Field], I've honed my skills in [List Key Skills, e.g., UI/UX design, web development, graphic design]. I'm dedicated to delivering high-quality work that exceeds expectations.  I believe in collaboration and clear communication, ensuring a smooth and enjoyable process for every client.  I'm always eager to learn and explore new technologies to stay at the forefront of the industry.
-            </p>
-            </div>
-        </section>
-            <section id="goodies">
-            <h2>Goodies</h2>
-            <h3>My Recent Work</h3>
-          <p>(For each project, include a visually appealing image or mockup and the following information):</p>
-<div class="roundboxgrey">
-            <h4>Project Title:** [Project Name]</h4>
-          <p>
-            **Client:** [Client Name or "Personal Project"]</br>
-            **Description:** [Brief description of the project and your role. Highlight key technologies used and results achieved.]</br>
-            **Link:** (Optional) Link to a live project or case study.</br>
-        </p>
-</div>
-        </section>
-        <section id="contact">
-            <h2>Contact</h2>
-            <h3>Please feel free to reach out to me!</h3>
-            <div class="roundboxnavy"><p>Body:  Ready to discuss your next project?  Feel free to reach out using the form below or via email at [Your Email Address].
+---
+layout: default
+title: Home
+---
 
-Form:  Include a simple contact form with fields for Name, Email, and Message.
-</p></div>
-<div class="roundboxgrey"><div class="container"> <form id="contactForm" action="submit.php" method="post">  <!-- Replace submit.php with your backend script -->
-      <div class="form-group">
-        <label for="name">Name:</label>
-        <input type="text" id="name" name="name" required>
-      </div>
-      <div class="form-group">
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required>
-      </div>
-      <div class="form-group">
-        <label for="topic">Topic:</label>
-        <input type="text" id="topic" name="topic" required>
-      </div>
-      <div class="form-group">
-        <label for="message">Message:</label>
-        <textarea id="message" name="message" required></textarea>
-      </div>
-      <button type="submit">Submit</button>
-    </form></div></div>
-        </section>
-    </main>
-    <footer>
-        <p id="copy">&copy; 2025 Digitalus Maximus</p>
-    </footer>
-    <script src="js/scripts.js"></script>
-</body>
-</html>
+<section id="home" class="mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-28">
+    <p class="text-sm font-semibold uppercase tracking-wider text-accent">Your Title</p>
+    <h1 class="mt-3 text-4xl font-bold tracking-tight text-ink sm:text-6xl">Hi, I'm Digitalus.</h1>
+    <p class="mt-5 max-w-2xl text-lg text-muted">
+        I build fast, accessible web experiences, and I tinker with games and design on the side.
+    </p>
+    <div class="mt-8 flex flex-wrap gap-3">
+        <a href="#projects" class="rounded-lg bg-accent px-5 py-3 font-semibold text-navy hover:opacity-90">View my work</a>
+        <a href="#contact" class="rounded-lg border border-line px-5 py-3 font-medium text-ink hover:bg-line">Get in touch</a>
+    </div>
+</section>
+
+<section id="latest" class="mx-auto max-w-6xl px-4 py-16 sm:px-6">
+    <div class="flex flex-wrap items-end justify-between gap-4">
+        <div>
+            <h2 class="text-2xl font-bold text-ink sm:text-3xl">Latest posts</h2>
+            <span class="mt-3 block h-1 w-12 rounded bg-accent"></span>
+            <p class="mt-2 text-muted">Notes on code, tools, and things I'm learning.</p>
+        </div>
+        <a href="{{ '/blog/' | relative_url }}" class="text-sm font-medium text-accent hover:underline">All posts &rarr;</a>
+    </div>
+    <div class="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {% for post in site.posts limit:6 %}
+            {% include post-card.html post=post %}
+        {% endfor %}
+    </div>
+</section>
+
+<section id="projects" class="border-y border-line bg-surface">
+    <div class="mx-auto max-w-6xl px-4 py-16 sm:px-6">
+        <h2 class="text-2xl font-bold text-ink sm:text-3xl">Projects</h2>
+        <span class="mt-3 block h-1 w-12 rounded bg-accent"></span>
+        <p class="mt-2 text-muted">A selection of recent work.</p>
+        <div class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {% for project in site.data.projects %}
+            <article class="flex flex-col overflow-hidden rounded-xl border border-line bg-canvas shadow-sm transition hover:-translate-y-0.5 hover:border-accent hover:shadow-md">
+                <img src="{{ project.image }}" alt="{{ project.title }} screenshot" class="aspect-video w-full object-cover" loading="lazy">
+                <div class="flex flex-1 flex-col p-6">
+                    <h3 class="text-xl font-semibold text-ink">{{ project.title }}</h3>
+                    <p class="mt-2 flex-1 text-muted">{{ project.description }}</p>
+                    <ul class="mt-4 flex flex-wrap gap-2">
+                        {% for tech in project.tech %}
+                        <li class="rounded-full bg-line px-2.5 py-1 text-xs font-medium text-muted">{{ tech }}</li>
+                        {% endfor %}
+                    </ul>
+                    <a href="{{ project.link }}" class="mt-5 text-sm font-medium text-accent hover:underline">View project &rarr;</a>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section id="about" class="mx-auto max-w-6xl px-4 py-16 sm:px-6">
+    <div class="grid gap-10 md:grid-cols-3">
+        <div>
+            <h2 class="text-2xl font-bold text-ink sm:text-3xl">About me</h2>
+            <span class="mt-3 block h-1 w-12 rounded bg-accent"></span>
+        </div>
+        <div class="md:col-span-2">
+            <p class="text-lg text-ink">
+                I'm Digitalus, a Your Title with [number] years of experience. I care about clear
+                code, thoughtful design, and communication that keeps projects moving.
+            </p>
+            <p class="mt-4 text-muted">
+                When I'm not building things, you'll find me playing games, sketching interfaces,
+                or learning something new. This site is where I share what I learn.
+            </p>
+            <h3 class="mt-8 text-sm font-semibold uppercase tracking-wider text-muted">Skills</h3>
+            <ul class="mt-3 flex flex-wrap gap-2">
+                {% assign skills = "HTML,CSS,JavaScript,Ruby,Git,UI Design,Accessibility" | split: "," %}
+                {% for skill in skills %}
+                <li class="rounded-full border border-line bg-surface px-3 py-1 text-sm text-ink">{{ skill }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</section>
+
+<section id="contact" class="border-t border-line bg-surface">
+    <div class="mx-auto grid max-w-6xl gap-10 px-4 py-16 sm:px-6 md:grid-cols-2">
+        <div>
+            <h2 class="text-2xl font-bold text-ink sm:text-3xl">Get in touch</h2>
+            <span class="mt-3 block h-1 w-12 rounded bg-accent"></span>
+            <p class="mt-3 text-muted">
+                Have a project in mind or just want to say hello? Send me a message using the form,
+                or email me directly at
+                <a href="mailto:{{ site.email }}?subject=Hello" class="font-medium text-accent hover:underline">{{ site.email }}</a>.
+            </p>
+        </div>
+        <form id="contactForm" action="submit.php" method="post" class="space-y-5">
+            <div>
+                <label for="name" class="mb-1.5 block text-sm font-medium text-ink">Name</label>
+                <input type="text" id="name" name="name" required class="w-full rounded-lg border border-line bg-canvas px-3 py-2 text-ink focus:border-brand focus:outline-none">
+            </div>
+            <div>
+                <label for="email" class="mb-1.5 block text-sm font-medium text-ink">Email</label>
+                <input type="email" id="email" name="email" required class="w-full rounded-lg border border-line bg-canvas px-3 py-2 text-ink focus:border-brand focus:outline-none">
+            </div>
+            <div>
+                <label for="topic" class="mb-1.5 block text-sm font-medium text-ink">Topic</label>
+                <input type="text" id="topic" name="topic" required class="w-full rounded-lg border border-line bg-canvas px-3 py-2 text-ink focus:border-brand focus:outline-none">
+            </div>
+            <div>
+                <label for="message" class="mb-1.5 block text-sm font-medium text-ink">Message</label>
+                <textarea id="message" name="message" rows="5" required class="w-full rounded-lg border border-line bg-canvas px-3 py-2 text-ink focus:border-brand focus:outline-none"></textarea>
+            </div>
+            <button type="submit" class="rounded-lg bg-accent px-5 py-3 font-semibold text-navy hover:opacity-90">Send message</button>
+        </form>
+    </div>
+</section>
