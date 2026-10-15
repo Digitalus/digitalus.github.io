@@ -8,6 +8,7 @@
     var START_COL = 5;
     var START_ROW = ROWS - 1;
     var LIVES = 5;
+    var HOP_TIME = 0.2;
     var ROAD_ROWS = [1, 2, 3, 4, 5];
     var RIVER_ROWS = [7, 8, 9, 10, 11];
     var SPEEDS = { 1: 36, 2: -48, 3: 30, 4: -60, 5: 42, 7: 30, 8: -36, 9: 48, 10: -27, 11: 36 };
@@ -119,7 +120,7 @@
     }
 
     function resetFrog() {
-        state.frog = { x: START_COL * TILE, row: START_ROW };
+        state.frog = { x: START_COL * TILE, row: START_ROW, angle: 0, hop: 0 };
     }
 
     function newGame() {
@@ -153,6 +154,11 @@
     function hop(dc, dr) {
         if (state.over) return;
         var f = state.frog;
+        if (dc > 0) f.angle = Math.PI / 2;
+        else if (dc < 0) f.angle = -Math.PI / 2;
+        else if (dr < 0) f.angle = Math.PI;
+        else if (dr > 0) f.angle = 0;
+        f.hop = HOP_TIME;
         var col = Math.min(COLS - 1, Math.max(0, Math.round(f.x / TILE) + dc));
         var row = Math.min(ROWS - 1, Math.max(0, f.row - dr));
         if (row < f.row) state.score += 10;
@@ -225,6 +231,7 @@
 
     function update(dt) {
         updateParticles(dt);
+        if (state.frog && state.frog.hop > 0) state.frog.hop = Math.max(0, state.frog.hop - dt);
         if (state.over) return;
         var step = dt * state.speed;
 
@@ -353,23 +360,115 @@
         var f = state.frog;
         var cx = f.x + TILE / 2;
         var cy = f.row * TILE + TILE / 2;
-        ctx.fillStyle = '#39ff14';
+        var ext = f.hop > 0 ? f.hop / HOP_TIME : 0;
+        var skin = ctx.createRadialGradient(0, -2, 2, 0, 2, 16);
+        skin.addColorStop(0, '#a6ff3d');
+        skin.addColorStop(0.55, '#39ff14');
+        skin.addColorStop(1, '#1fae1f');
+
+        ctx.save();
+        ctx.translate(cx, cy);
+        ctx.rotate(f.angle);
+        ctx.scale(0.9 * (1 - 0.1 * ext), 0.9 * (1 + 0.18 * ext));
+
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
         ctx.shadowColor = '#39ff14';
-        ctx.shadowBlur = 18;
+        ctx.shadowBlur = 14;
+
+        [-1, 1].forEach(function (s) {
+            ctx.strokeStyle = '#2bd61a';
+            ctx.lineWidth = 5;
+            ctx.beginPath();
+            ctx.moveTo(s * 7, 3);
+            ctx.lineTo(s * (13 - 4 * ext), 9 + 4 * ext);
+            ctx.lineTo(s * (10 - 3 * ext), 15 + 5 * ext);
+            ctx.stroke();
+
+            var fx = s * (10 - 3 * ext);
+            var fy = 15 + 5 * ext;
+            ctx.lineWidth = 1.6;
+            ctx.strokeStyle = '#7dff4a';
+            [-0.7, 0, 0.7].forEach(function (a) {
+                ctx.beginPath();
+                ctx.moveTo(fx, fy);
+                ctx.lineTo(fx + Math.sin(a + s * 0.3) * 6, fy + Math.cos(a) * 5);
+                ctx.stroke();
+            });
+
+            ctx.lineWidth = 3.2;
+            ctx.strokeStyle = '#2bd61a';
+            ctx.beginPath();
+            ctx.moveTo(s * 6, -5);
+            ctx.lineTo(s * 11, -2 - 2 * ext);
+            ctx.lineTo(s * 12, -7 - 3 * ext);
+            ctx.stroke();
+
+            ctx.lineWidth = 1.4;
+            ctx.strokeStyle = '#7dff4a';
+            [-0.5, 0.1, 0.7].forEach(function (a) {
+                ctx.beginPath();
+                ctx.moveTo(s * 12, -7 - 3 * ext);
+                ctx.lineTo(s * 12 + Math.sin(a) * 4, -7 - 3 * ext - Math.cos(a) * 3.5);
+                ctx.stroke();
+            });
+        });
+
+        ctx.fillStyle = skin;
         ctx.beginPath();
-        ctx.arc(cx, cy, 14, 0, Math.PI * 2);
+        ctx.ellipse(0, 3, 10, 13, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.ellipse(0, -9, 8, 7, 0, 0, Math.PI * 2);
         ctx.fill();
         ctx.shadowBlur = 0;
-        ctx.fillStyle = '#ffffff';
+
+        ctx.strokeStyle = 'rgba(190,255,120,0.85)';
+        ctx.lineWidth = 1.5;
         ctx.beginPath();
-        ctx.arc(cx - 6, cy - 7, 4, 0, Math.PI * 2);
-        ctx.arc(cx + 6, cy - 7, 4, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.fillStyle = '#111';
+        ctx.moveTo(0, -13);
+        ctx.lineTo(0, 12);
+        ctx.stroke();
+
+        ctx.fillStyle = 'rgba(10,90,20,0.55)';
+        [[-5, -1, 3, 2.2], [5, 2, 3, 2.4], [-4, 7, 2.6, 2], [4.5, -4, 2.2, 1.8], [-6, 3, 1.8, 1.6]].forEach(function (p) {
+            ctx.beginPath();
+            ctx.ellipse(p[0], p[1], p[2], p[3], 0, 0, Math.PI * 2);
+            ctx.fill();
+        });
+
+        ctx.strokeStyle = 'rgba(10,90,20,0.8)';
+        ctx.lineWidth = 1;
         ctx.beginPath();
-        ctx.arc(cx - 6, cy - 7, 2, 0, Math.PI * 2);
-        ctx.arc(cx + 6, cy - 7, 2, 0, Math.PI * 2);
+        ctx.arc(0, -11.5, 5, 0.25 * Math.PI, 0.75 * Math.PI);
+        ctx.stroke();
+
+        ctx.fillStyle = 'rgba(10,70,20,0.9)';
+        ctx.beginPath();
+        ctx.arc(-2, -15.5, 0.8, 0, Math.PI * 2);
+        ctx.arc(2, -15.5, 0.8, 0, Math.PI * 2);
         ctx.fill();
+
+        [-1, 1].forEach(function (s) {
+            ctx.fillStyle = '#2bd61a';
+            ctx.beginPath();
+            ctx.arc(s * 6, -13, 4.6, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = '#ffd43b';
+            ctx.beginPath();
+            ctx.arc(s * 6, -13, 3.4, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = '#111';
+            ctx.beginPath();
+            ctx.ellipse(s * 6, -13, 0.9, 2.7, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = 'rgba(255,255,255,0.9)';
+            ctx.beginPath();
+            ctx.arc(s * 6 - 1, -14.3, 0.8, 0, Math.PI * 2);
+            ctx.fill();
+        });
+
+        ctx.restore();
     }
 
     function drawOverlay() {
