@@ -1,0 +1,28 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+@theme {
+    --color-canvas: rgb(var(--canvas));
+    --color-surface: rgb(var(--surface));
+    --color-ink: rgb(var(--ink));
+    --color-muted: rgb(var(--muted));
+    --color-line: rgb(var(--line));
+    --color-brand: rgb(var(--brand));
+    --color-navy: rgb(var(--navy));
+    --color-sky: rgb(var(--sky));
+    --color-accent: rgb(var(--accent));
+    --color-light: rgb(var(--light));
+    --color-title-end: rgb(var(--title-end));
+    --color-gray-50: rgb(var(--gray-50));
+    --color-gray-100: rgb(var(--gray-100));
+    --color-gray-200: rgb(var(--gray-200));
+    --color-gray-300: rgb(var(--gray-300));
+    --color-gray-400: rgb(var(--gray-400));
+    --color-gray-500: rgb(var(--gray-500));
+    --color-gray-600: rgb(var(--gray-600));
+    --color-gray-700: rgb(var(--gray-700));
+    --color-gray-800: rgb(var(--gray-800));
+    --color-gray-900: rgb(var(--gray-900));
+}
+
+@source "../";

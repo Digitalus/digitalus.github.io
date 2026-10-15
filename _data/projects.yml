@@ -1,6 +1,6 @@
 - title: Desk Calculator
   description: A clean, keyboard-friendly desk calculator with a dark display, sign and percent toggles, and full keyboard support. Built with vanilla JavaScript, HTML, and CSS, with no dependencies.
-  image: /images/calc-screenshot.png
+  image: /images/calc-screenshot.webp
   tech:
     - JavaScript
     - HTML
@@ -9,7 +9,7 @@
 
 - title: NurtureDesk CRM
   description: A customer relationship manager for small teams to track leads, follow-ups, and client notes in one place. Includes a pipeline view and reminders so no contact falls through the cracks.
-  image: /images/crm-screenshot.png
+  image: /images/crm-screenshot.webp
   tech:
     - Web App
     - CRM
@@ -18,7 +18,7 @@
 
 - title: Company Website
   description: The public website for Tri-State Media Group, a web, app, and multimedia studio. Features a dark, modern landing page with a clear hero message, service highlights, and calls to action that lead visitors to services and examples.
-  image: /images/company-website-screenshot.png
+  image: /images/company-website-screenshot.webp
   tech:
     - Web Development
     - Web Apps

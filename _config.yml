@@ -11,3 +11,7 @@ exclude:
   - Gemfile
   - Gemfile.lock
   - README.md
+  - node_modules
+  - package.json
+  - package-lock.json
+  - css/tailwind.input.css
