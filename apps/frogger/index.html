@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Frogger</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="lines">
+    <div class="line"></div>
+    <div class="line"></div>
+    <div class="line"></div>
+    <div class="line"></div>
+    <div class="line"></div>
+    <div class="line"></div>
+    <div class="line"></div>
+    <div class="line"></div>
+    <div class="line"></div>
+    <div class="line"></div>
+  </div>
+
+  <main class="game" aria-label="Frogger game">
+    <header class="game__header">
+      <h1 class="game__title"><svg class="game__icon" viewBox="0 0 64 64" aria-hidden="true"><ellipse cx="32" cy="38" rx="22" ry="16" fill="#39ff14"/><circle cx="20" cy="22" r="8" fill="#39ff14"/><circle cx="44" cy="22" r="8" fill="#39ff14"/><circle cx="20" cy="20" r="3.5" fill="#111"/><circle cx="44" cy="20" r="3.5" fill="#111"/><path d="M10 46 L2 56 M18 50 L12 60 M46 50 L52 60 M54 46 L62 56" stroke="#39ff14" stroke-width="4" stroke-linecap="round"/></svg>Frogger</h1>
+      <div class="game__stats">
+        <span>Score <strong id="score">0</strong></span>
+        <span>Lives <strong id="lives">3</strong></span>
+        <span>Level <strong id="level">1</strong></span>
+        <span>Best <strong id="best">0</strong></span>
+      </div>
+    </header>
+
+    <canvas id="game" width="480" height="520"></canvas>
+
+    <div class="pad" aria-label="Touch controls">
+      <button type="button" class="pad__btn pad__up" data-dir="up" aria-label="Up">&#9650;</button>
+      <button type="button" class="pad__btn pad__left" data-dir="left" aria-label="Left">&#9664;</button>
+      <button type="button" class="pad__btn pad__down" data-dir="down" aria-label="Down">&#9660;</button>
+      <button type="button" class="pad__btn pad__right" data-dir="right" aria-label="Right">&#9654;</button>
+    </div>
+
+    <div class="game__controls">
+      <p>Arrow keys or WASD to hop. Reach the top strip without getting hit or falling in the river. Click the Sound button for audio.</p>
+      <div class="game__buttons">
+        <button id="sound" type="button" aria-pressed="true">Sound: On</button>
+        <button id="restart" type="button">New game</button>
+        <button id="reset" type="button">Reset progress</button>
+        <a class="game__home" href="https://digitalus.github.io/">Home</a>
+      </div>
+    </div>
+  </main>
+
+<script src="script.js"></script>
+</body>
+</html>
