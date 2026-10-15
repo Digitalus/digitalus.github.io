@@ -6,3 +6,4 @@ _site/
 vendor/
 Gemfile.lock
 node_modules/
+.playwright-mcp/
