@@ -7,6 +7,16 @@
     - CSS
   link: /apps/calc/
 
+- title: Frogger Arcade Game
+  description: A retro neon-styled arcade classic built with HTML5 Canvas, Web Audio API sound effects, touch controls, mobile support, and fireworks celebration effects.
+  image: /images/frogger-screenshot.webp
+  tech:
+    - Canvas
+    - JavaScript
+    - Web Audio
+    - Game Dev
+  link: /apps/frogger/
+
 - title: NurtureDesk CRM
   description: A customer relationship manager for small teams to track leads, follow-ups, and client notes in one place. Includes a pipeline view and reminders so no contact falls through the cracks.
   image: /images/crm-screenshot.webp
