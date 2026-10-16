@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="robots" content="index, follow">
+    <meta name="robots" content="{{ page.robots | default: 'index, follow' }}">
     {% assign seo_title = site.title | append: " | Web Developer Portfolio & Blog" %}
     {% if page.url != "/" and page.title %}{% assign seo_title = page.title | append: " | " | append: site.title %}{% endif %}
     {% assign seo_desc = page.description | default: site.description | strip_html | strip_newlines | escape %}
