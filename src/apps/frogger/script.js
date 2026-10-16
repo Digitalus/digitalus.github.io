@@ -101,10 +101,15 @@
     var sounds = {
         // Quick rising chirp when the frog hops.
         hop: function () { tone(360, 0.11, 'sine', 0.14, 620); },
-        // Muffled thud with a falling tone when the frog is hit or falls in the river.
+        // Muffled thud with a falling tone when the frog is hit by a car.
         splat: function () {
             noise(0.35, 0.5, 700);
             tone(150, 0.3, 'sine', 0.18, 45);
+        },
+        // Bright watery splash with a quick falling bloop when the frog falls in the river.
+        splash: function () {
+            noise(0.45, 0.45, 3500);
+            tone(700, 0.25, 'sine', 0.14, 220);
         },
         // Rising four-note fanfare when the frog reaches the HOME strip.
         goal: function () {
@@ -142,7 +147,7 @@
             var items = [];
             var count = isRoad ? roadCount : logCount;
             for (var i = 0; i < count; i++) {
-                items.push({ x: -TILE + i * LOOP / count, w: width, color: CAR_COLORS[(row + i) % CAR_COLORS.length] });
+                items.push({ x: -TILE + i * LOOP / count, w: width, color: CAR_COLORS[(row + i) % CAR_COLORS.length], stripe: (row + i) % 3 === 0, seed: Math.floor(Math.random() * 90) + 1 });
             }
             lanes[row] = { road: isRoad, speed: SPEEDS[row], items: items };
         });
@@ -167,6 +172,7 @@
     function newGame() {
         state = { lives: LIVES, score: 0, level: 1, speed: 1, over: false };
         particles = [];
+        marks = [];
         homeFlash = 0;
         buildLanes(1);
         resetFrog();
@@ -180,13 +186,115 @@
         }
     }
 
-    /** Costs the frog one life. Ends the game on the last life, otherwise restarts the frog at the start. */
-    function die() {
+    /** Marks left on the board after a death: red splats on the road and expanding ripples on the water. */
+    var marks = [];
+
+    /**
+     * Leaves a red splat where the frog was hit, and flings red droplets outward.
+     * @param {number} x - Splat center in canvas pixels.
+     * @param {number} y - Splat center in canvas pixels.
+     */
+    function spawnSplat(x, y) {
+        var blobs = [];
+        for (var i = 0; i < 9; i++) {
+            var a = Math.random() * Math.PI * 2;
+            var d = 6 + Math.random() * 14;
+            blobs.push({ dx: Math.cos(a) * d, dy: Math.sin(a) * d, r: 2 + Math.random() * 4 });
+        }
+        marks.push({ kind: 'splat', x: x, y: y, age: 0, life: 3, blobs: blobs });
+        for (var j = 0; j < 14; j++) {
+            var ang = Math.random() * Math.PI * 2;
+            var sp = 50 + Math.random() * 100;
+            particles.push({
+                x: x, y: y,
+                vx: Math.cos(ang) * sp, vy: Math.sin(ang) * sp - 30,
+                life: 0.6, max: 0.6, color: Math.random() < 0.5 ? '#ff1a1a' : '#b30000'
+            });
+        }
+    }
+
+    /**
+     * Makes a splash where the frog fell in the water: expanding ripple rings
+     * and droplets that shoot upward and fall back down.
+     * @param {number} x - Splash center in canvas pixels.
+     * @param {number} y - Splash center in canvas pixels.
+     */
+    function spawnSplash(x, y) {
+        marks.push({ kind: 'splash', x: x, y: y, age: 0, life: 1 });
+        for (var i = 0; i < 22; i++) {
+            var ang = -Math.PI / 2 + (Math.random() - 0.5) * 1.6;
+            var sp = 90 + Math.random() * 130;
+            particles.push({
+                x: x, y: y,
+                vx: Math.cos(ang) * sp, vy: Math.sin(ang) * sp,
+                life: 0.8, max: 0.8, color: Math.random() < 0.5 ? '#bff4ff' : '#00cfff'
+            });
+        }
+    }
+
+    /**
+     * Draws the marks: a red splat that slowly fades, or three ripple rings
+     * that expand and fade quickly.
+     */
+    function drawMarks() {
+        marks.forEach(function (m) {
+            var t = m.age / m.life;
+            if (m.kind === 'splat') {
+                ctx.globalAlpha = t < 0.6 ? 1 : Math.max(0, 1 - (t - 0.6) / 0.4);
+                ctx.fillStyle = '#d10000';
+                ctx.shadowColor = '#ff1a1a';
+                ctx.shadowBlur = 10;
+                ctx.beginPath();
+                ctx.ellipse(m.x, m.y, 15, 12, 0.4, 0, Math.PI * 2);
+                ctx.fill();
+                m.blobs.forEach(function (b) {
+                    ctx.beginPath();
+                    ctx.arc(m.x + b.dx, m.y + b.dy, b.r, 0, Math.PI * 2);
+                    ctx.fill();
+                });
+                ctx.fillStyle = '#ff4040';
+                ctx.beginPath();
+                ctx.ellipse(m.x - 3, m.y - 2, 6, 4, 0.4, 0, Math.PI * 2);
+                ctx.fill();
+            } else {
+                ctx.strokeStyle = '#bff4ff';
+                ctx.shadowColor = '#00cfff';
+                ctx.shadowBlur = 8;
+                ctx.lineWidth = 2;
+                for (var i = 0; i < 3; i++) {
+                    var rt = t - i * 0.15;
+                    if (rt <= 0 || rt >= 1) continue;
+                    ctx.globalAlpha = 1 - rt;
+                    ctx.beginPath();
+                    ctx.ellipse(m.x, m.y, 6 + rt * 30, 4 + rt * 20, 0, 0, Math.PI * 2);
+                    ctx.stroke();
+                }
+            }
+        });
+        ctx.globalAlpha = 1;
+        ctx.shadowBlur = 0;
+    }
+
+    /**
+     * Costs the frog one life. Ends the game on the last life, otherwise restarts the frog at the start.
+     * @param {string} kind - 'splat' when hit by a car, 'splash' when the frog fell in the river.
+     */
+    function die(kind) {
         if (state.over) return;
+        var f = state.frog;
+        var x = Math.min(W - 10, Math.max(10, f.x + TILE / 2));
+        var y = f.row * TILE + TILE / 2;
         state.lives--;
-        sounds.splat();
+        if (kind === 'splash') {
+            spawnSplash(x, y);
+            sounds.splash();
+        } else {
+            spawnSplat(x, y);
+            sounds.splat();
+        }
         if (state.lives <= 0) {
             state.over = true;
+            f.dead = true;
             setBest();
             sounds.over();
         } else {
@@ -275,6 +383,8 @@
             p.life -= dt;
         });
         particles = particles.filter(function (p) { return p.life > 0; });
+        marks.forEach(function (m) { m.age += dt; });
+        marks = marks.filter(function (m) { return m.age < m.life; });
     }
 
     /** Draws every firework particle as a glowing dot that fades as it ages. */
@@ -330,7 +440,7 @@
             var body = { x: f.x + 10, w: TILE - 20 };
             for (var i = 0; i < lane.items.length; i++) {
                 if (overlaps(body, lane.items[i])) {
-                    die();
+                    die('splat');
                     return;
                 }
             }
@@ -344,12 +454,12 @@
                 }
             }
             if (!log) {
-                die();
+                die('splash');
                 return;
             }
             f.x += lane.speed * step;
             cx = f.x + TILE / 2;
-            if (cx < 0 || cx > W) die();
+            if (cx < 0 || cx > W) die('splash');
         }
     }
 
@@ -414,32 +524,203 @@
         ctx.fill();
     }
 
-    /** Draws the glowing cars (with a windshield on the front) and the amber logs. */
+    /**
+     * Lightens or darkens a hex color.
+     * @param {string} hex - Color such as '#ff9f1c'.
+     * @param {number} amt - From -1 (black) to 1 (white).
+     * @returns {string} An rgb() color.
+     */
+    function shade(hex, amt) {
+        var n = parseInt(hex.slice(1), 16);
+        var ch = [n >> 16, (n >> 8) & 255, n & 255].map(function (c) {
+            return Math.round(amt < 0 ? c * (1 + amt) : c + (255 - c) * amt);
+        });
+        return 'rgb(' + ch.join(',') + ')';
+    }
+
+    /**
+     * Draws one top-down car at its position, with the front facing the direction of travel:
+     * a shadow, wheels, shaded body, roof, glass, headlights with a light beam, and taillights.
+     * @param {{x: number, w: number, color: string, stripe: boolean}} it - The car.
+     * @param {number} y - Top of the lane in canvas pixels.
+     * @param {number} dirSign - 1 when driving right, -1 when driving left.
+     */
+    function drawCar(it, y, dirSign) {
+        var hw = it.w / 2;
+        var hh = 12;
+        ctx.save();
+        ctx.translate(it.x + hw, y + TILE / 2);
+        ctx.scale(dirSign, 1);
+
+        ctx.fillStyle = 'rgba(0,0,0,0.4)';
+        roundRect(-hw + 2, -hh + 3, it.w - 2, hh * 2, 8);
+
+        var beam = ctx.createLinearGradient(hw - 2, 0, hw + 34, 0);
+        beam.addColorStop(0, 'rgba(255,247,190,0.35)');
+        beam.addColorStop(1, 'rgba(255,247,190,0)');
+        ctx.fillStyle = beam;
+        ctx.beginPath();
+        ctx.moveTo(hw - 2, -7);
+        ctx.lineTo(hw + 34, -15);
+        ctx.lineTo(hw + 34, 15);
+        ctx.lineTo(hw - 2, 7);
+        ctx.closePath();
+        ctx.fill();
+
+        ctx.fillStyle = '#0b0b10';
+        [-hw + 9, hw - 21].forEach(function (wx) {
+            ctx.fillRect(wx, -hh - 2, 12, 5);
+            ctx.fillRect(wx, hh - 3, 12, 5);
+        });
+
+        var body = ctx.createLinearGradient(0, -hh, 0, hh);
+        body.addColorStop(0, shade(it.color, 0.35));
+        body.addColorStop(0.35, it.color);
+        body.addColorStop(1, shade(it.color, -0.45));
+        ctx.fillStyle = body;
+        ctx.shadowColor = it.color;
+        ctx.shadowBlur = 8;
+        roundRect(-hw, -hh, it.w, hh * 2, 8);
+        ctx.shadowBlur = 0;
+
+        if (it.stripe) {
+            ctx.fillStyle = 'rgba(255,255,255,0.8)';
+            ctx.fillRect(-hw + 6, -2, it.w - 12, 1.8);
+            ctx.fillRect(-hw + 6, 1, it.w - 12, 1.8);
+        }
+
+        ctx.fillStyle = shade(it.color, -0.25);
+        roundRect(-14, -9, 26, 18, 5);
+        var roof = ctx.createLinearGradient(0, -9, 0, 9);
+        roof.addColorStop(0, shade(it.color, 0.25));
+        roof.addColorStop(1, shade(it.color, -0.3));
+        ctx.fillStyle = roof;
+        roundRect(-11, -7, 20, 14, 4);
+
+        var glass = ctx.createLinearGradient(0, -9, 0, 9);
+        glass.addColorStop(0, '#bdeeff');
+        glass.addColorStop(1, '#2a6f9a');
+        ctx.fillStyle = glass;
+        ctx.beginPath();
+        ctx.moveTo(10, -8);
+        ctx.lineTo(19, -10);
+        ctx.lineTo(19, 10);
+        ctx.lineTo(10, 8);
+        ctx.closePath();
+        ctx.fill();
+        ctx.fillStyle = '#1f4f73';
+        ctx.beginPath();
+        ctx.moveTo(-12, -7);
+        ctx.lineTo(-19, -9);
+        ctx.lineTo(-19, 9);
+        ctx.lineTo(-12, 7);
+        ctx.closePath();
+        ctx.fill();
+
+        ctx.fillStyle = '#fff7be';
+        ctx.shadowColor = '#fff7be';
+        ctx.shadowBlur = 8;
+        [-7, 7].forEach(function (hy) {
+            ctx.beginPath();
+            ctx.arc(hw - 3, hy, 2.6, 0, Math.PI * 2);
+            ctx.fill();
+        });
+        ctx.fillStyle = '#ff1a1a';
+        ctx.shadowColor = '#ff1a1a';
+        [-8, 8].forEach(function (ty) {
+            ctx.fillRect(-hw + 1, ty - 2, 3, 4);
+        });
+        ctx.shadowBlur = 0;
+        ctx.restore();
+    }
+
+    /**
+     * Draws one top-down log: a soft shadow and foam on the water, a barrel-shaded trunk,
+     * bark grooves, knots, and lighter end caps with growth rings.
+     * @param {{x: number, w: number, seed: number}} it - The log.
+     * @param {number} y - Top of the lane in canvas pixels.
+     */
+    function drawLog(it, y) {
+        var x = it.x;
+        var w = it.w;
+        var top = y + 6;
+        var h = TILE - 12;
+
+        ctx.fillStyle = 'rgba(0,15,60,0.45)';
+        roundRect(x + 3, top + 4, w, h, 10);
+
+        ctx.strokeStyle = 'rgba(255,255,255,0.35)';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(x + 8, top - 2);
+        ctx.lineTo(x + w - 8, top - 2);
+        ctx.moveTo(x + 8, top + h + 2);
+        ctx.lineTo(x + w - 8, top + h + 2);
+        ctx.stroke();
+
+        var bark = ctx.createLinearGradient(0, top, 0, top + h);
+        bark.addColorStop(0, '#4a2a12');
+        bark.addColorStop(0.3, '#a06a32');
+        bark.addColorStop(0.55, '#8a5726');
+        bark.addColorStop(1, '#3d2210');
+        ctx.fillStyle = bark;
+        roundRect(x, top, w, h, 10);
+
+        ctx.save();
+        ctx.beginPath();
+        ctx.rect(x + 8, top, w - 16, h);
+        ctx.clip();
+        ctx.lineWidth = 1;
+        for (var i = 0; i < 6; i++) {
+            var gy = top + 4 + i * ((h - 8) / 5);
+            ctx.strokeStyle = i % 2 ? 'rgba(30,15,5,0.45)' : 'rgba(255,215,160,0.18)';
+            ctx.beginPath();
+            ctx.moveTo(x + 8, gy);
+            for (var gx = x + 8; gx < x + w - 8; gx += 12) {
+                ctx.lineTo(gx + 12, gy + Math.sin(gx * 0.3 + it.seed + i) * 1.2);
+            }
+            ctx.stroke();
+        }
+        [0.25, 0.62].forEach(function (p, k) {
+            var kx = x + w * (p + (((it.seed * (k + 3)) % 10) / 100));
+            var ky = top + h * (k ? 0.68 : 0.32);
+            ctx.fillStyle = '#2b1608';
+            ctx.beginPath();
+            ctx.ellipse(kx, ky, 4.5, 3, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = 'rgba(255,215,160,0.3)';
+            ctx.beginPath();
+            ctx.ellipse(kx, ky, 6.5, 4.5, 0, 0, Math.PI * 2);
+            ctx.stroke();
+        });
+        ctx.restore();
+
+        [x + 6, x + w - 6].forEach(function (ex) {
+            var cap = ctx.createRadialGradient(ex, top + h / 2, 1, ex, top + h / 2, h / 2);
+            cap.addColorStop(0, '#e8c48a');
+            cap.addColorStop(1, '#b07a3e');
+            ctx.fillStyle = cap;
+            ctx.beginPath();
+            ctx.ellipse(ex, top + h / 2, 6, h / 2 - 1, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = 'rgba(90,50,20,0.7)';
+            ctx.lineWidth = 1;
+            [0.3, 0.6].forEach(function (s) {
+                ctx.beginPath();
+                ctx.ellipse(ex, top + h / 2, 6 * s, (h / 2 - 1) * s, 0, 0, Math.PI * 2);
+                ctx.stroke();
+            });
+        });
+    }
+
+    /** Draws the cars and the logs. */
     function drawObjects() {
         Object.keys(lanes).forEach(function (row) {
             var lane = lanes[row];
             var y = row * TILE;
             lane.items.forEach(function (it) {
-                if (lane.road) {
-                    ctx.fillStyle = it.color;
-                    ctx.shadowColor = it.color;
-                    ctx.shadowBlur = 16;
-                    roundRect(it.x, y + 8, it.w, TILE - 16, 8);
-                    ctx.shadowBlur = 0;
-                    ctx.fillStyle = 'rgba(20,20,30,0.55)';
-                    var front = lane.speed > 0 ? it.x + it.w - 14 : it.x + 4;
-                    ctx.fillRect(front, y + 13, 10, TILE - 26);
-                } else {
-                    ctx.fillStyle = '#ff9f1c';
-                    ctx.shadowColor = '#ff9f1c';
-                    ctx.shadowBlur = 14;
-                    roundRect(it.x, y + 6, it.w, TILE - 12, 6);
-                    ctx.shadowBlur = 0;
-                    ctx.fillStyle = 'rgba(0,0,0,0.25)';
-                    for (var gx = it.x + 16; gx < it.x + it.w - 8; gx += 28) {
-                        ctx.fillRect(gx, y + 12, 2, TILE - 24);
-                    }
-                }
+                if (lane.road) drawCar(it, y, lane.speed > 0 ? 1 : -1);
+                else drawLog(it, y);
             });
         });
     }
@@ -583,8 +864,9 @@
         ctx.clearRect(0, 0, W, H);
         ctx.shadowBlur = 0;
         drawGrid();
+        drawMarks();
         drawObjects();
-        drawFrog();
+        if (!state.frog.dead) drawFrog();
         drawParticles();
         if (state.over) drawOverlay();
 

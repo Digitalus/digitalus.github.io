@@ -89,6 +89,7 @@ npm run watch:css           # rebuild on change while editing
 - Sound is synthesized with Web Audio (no audio files), with a Sound on/off toggle saved in `localStorage`. The best score is saved under `frogger-best`.
 - Difficulty rises each time the frog reaches the top: faster lanes, more cars, and narrower logs at higher levels.
 - Reaching the top strip triggers fireworks and flashes the word HOME.
+- Getting hit by a car leaves a red splat on the road that fades after about 3 seconds. Falling in the river makes a ripple and droplet splash with its own sound.
 
 **Snake (`apps/snake/`)**
 - HTML5 canvas game with the same neon styling, animated background, and controls layout as Frogger (it reuses Frogger's stylesheet).
