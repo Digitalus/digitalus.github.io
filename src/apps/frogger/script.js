@@ -6,6 +6,8 @@
     var W = COLS * TILE;
     var H = ROWS * TILE;
     var LOOP = W + 2 * TILE;
+    var LOG_SIZES = [2, 2.75, 3.5, 4.25, 5];
+    var LOG_MIN_GAP = TILE * 0.75;
     var START_COL = 5;
     var START_ROW = ROWS - 1;
     var LIVES = 5;
@@ -132,6 +134,20 @@
     }
 
     /**
+     * Rolls a random look for one log: its knots and its bark grain.
+     * @param {number} w - Log width in pixels.
+     * @returns {{knots: Array, lines: number, amp: number, freq: number}} The look.
+     */
+    function makeLogLook(w) {
+        var knots = [];
+        var n = 1 + Math.floor(Math.random() * Math.max(1, Math.round(w / TILE)));
+        for (var k = 0; k < n; k++) {
+            knots.push({ p: 0.12 + Math.random() * 0.76, py: 0.2 + Math.random() * 0.6, r: 3 + Math.random() * 2.5 });
+        }
+        return { knots: knots, lines: 4 + Math.floor(Math.random() * 5), amp: 0.7 + Math.random() * 1.8, freq: 0.2 + Math.random() * 0.25 };
+    }
+
+    /**
      * Builds the moving cars (road rows) and logs (river rows) for a level.
      * Higher levels add more cars per road lane, fewer and shorter logs per river lane.
      * @param {number} level - The current level, starting at 1.
@@ -139,15 +155,37 @@
     function buildLanes(level) {
         var roadCount = Math.min(4, 2 + Math.floor((level - 1) / 2));
         var logCount = Math.max(2, 3 - Math.floor((level - 1) / 3));
-        var logWidth = TILE * (level >= 4 ? 3.5 : 4);
+        var logScale = level >= 4 ? 3.5 / 4 : 1;
         lanes = {};
         ROAD_ROWS.concat(RIVER_ROWS).forEach(function (row) {
             var isRoad = ROAD_ROWS.indexOf(row) !== -1;
-            var width = isRoad ? TILE * 1.6 : logWidth;
             var items = [];
-            var count = isRoad ? roadCount : logCount;
-            for (var i = 0; i < count; i++) {
-                items.push({ x: -TILE + i * LOOP / count, w: width, color: CAR_COLORS[(row + i) % CAR_COLORS.length], stripe: (row + i) % 3 === 0, seed: Math.floor(Math.random() * 90) + 1 });
+            var i;
+            if (isRoad) {
+                for (i = 0; i < roadCount; i++) {
+                    items.push({ x: -TILE + i * LOOP / roadCount, w: TILE * 1.6, color: CAR_COLORS[(row + i) % CAR_COLORS.length], stripe: (row + i) % 3 === 0, seed: Math.floor(Math.random() * 90) + 1 });
+                }
+            } else {
+                var widths;
+                var total;
+                do {
+                    widths = [];
+                    total = 0;
+                    for (i = 0; i < logCount; i++) {
+                        var lw = TILE * LOG_SIZES[Math.floor(Math.random() * LOG_SIZES.length)] * logScale;
+                        widths.push(lw);
+                        total += lw;
+                    }
+                } while (total + logCount * LOG_MIN_GAP > LOOP);
+                var slack = LOOP - total - logCount * LOG_MIN_GAP;
+                var cuts = [];
+                for (i = 0; i < logCount; i++) cuts.push(Math.random());
+                var cutSum = cuts.reduce(function (a, b) { return a + b; }, 0);
+                var x = -TILE;
+                for (i = 0; i < logCount; i++) {
+                    items.push({ x: x, w: widths[i], seed: Math.floor(Math.random() * 90) + 1, log: makeLogLook(widths[i]) });
+                    x += widths[i] + LOG_MIN_GAP + slack * cuts[i] / cutSum;
+                }
             }
             lanes[row] = { road: isRoad, speed: SPEEDS[row], items: items };
         });
@@ -671,26 +709,27 @@
         ctx.rect(x + 8, top, w - 16, h);
         ctx.clip();
         ctx.lineWidth = 1;
-        for (var i = 0; i < 6; i++) {
-            var gy = top + 4 + i * ((h - 8) / 5);
+        var look = it.log;
+        for (var i = 0; i < look.lines; i++) {
+            var gy = top + 4 + i * ((h - 8) / (look.lines - 1));
             ctx.strokeStyle = i % 2 ? 'rgba(30,15,5,0.45)' : 'rgba(255,215,160,0.18)';
             ctx.beginPath();
             ctx.moveTo(x + 8, gy);
             for (var gx = x + 8; gx < x + w - 8; gx += 12) {
-                ctx.lineTo(gx + 12, gy + Math.sin(gx * 0.3 + it.seed + i) * 1.2);
+                ctx.lineTo(gx + 12, gy + Math.sin(gx * look.freq + it.seed + i) * look.amp);
             }
             ctx.stroke();
         }
-        [0.25, 0.62].forEach(function (p, k) {
-            var kx = x + w * (p + (((it.seed * (k + 3)) % 10) / 100));
-            var ky = top + h * (k ? 0.68 : 0.32);
+        look.knots.forEach(function (kn) {
+            var kx = x + w * kn.p;
+            var ky = top + h * kn.py;
             ctx.fillStyle = '#2b1608';
             ctx.beginPath();
-            ctx.ellipse(kx, ky, 4.5, 3, 0, 0, Math.PI * 2);
+            ctx.ellipse(kx, ky, kn.r, kn.r * 0.67, 0, 0, Math.PI * 2);
             ctx.fill();
             ctx.strokeStyle = 'rgba(255,215,160,0.3)';
             ctx.beginPath();
-            ctx.ellipse(kx, ky, 6.5, 4.5, 0, 0, Math.PI * 2);
+            ctx.ellipse(kx, ky, kn.r + 2, kn.r * 0.67 + 1.5, 0, 0, Math.PI * 2);
             ctx.stroke();
         });
         ctx.restore();
