@@ -242,3 +242,10 @@ canvas {
 .game__controls button:hover {
   opacity: 0.9;
 }
+
+.game__name {
+  font-family: "Bungee", "Press Start 2P", system-ui, sans-serif;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
