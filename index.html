@@ -39,7 +39,7 @@ title: Home
         <div class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {% for project in site.data.projects %}
             <article class="flex flex-col overflow-hidden rounded-xl border border-line bg-canvas shadow-sm transition hover:-translate-y-0.5 hover:border-accent hover:shadow-md">
-                <img src="{{ project.image }}" alt="{{ project.title }} screenshot" class="aspect-video w-full object-cover" loading="lazy">
+                <img src="{{ project.image }}" alt="{% if project.alt %}{{ project.alt }}{% else %}{{ project.title }} screenshot{% endif %}" width="{{ project.width }}" height="{{ project.height }}" class="aspect-video w-full object-cover" loading="lazy" decoding="async">
                 <div class="flex flex-1 flex-col p-6">
                     <h3 class="text-xl font-semibold text-ink">{{ project.title }}</h3>
                     <p class="mt-2 flex-1 text-muted">{{ project.description }}</p>

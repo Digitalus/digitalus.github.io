@@ -1,6 +1,9 @@
 - title: Desk Calculator
   description: A clean, keyboard-friendly desk calculator with a dark display, sign and percent toggles, and full keyboard support. Built with vanilla JavaScript, HTML, and CSS, with no dependencies.
   image: /images/calc-screenshot.webp
+  alt: Desk Calculator web app with a dark display and number keys
+  width: 785
+  height: 654
   tech:
     - JavaScript
     - HTML
@@ -10,6 +13,9 @@
 - title: Frogger Arcade Game
   description: A retro neon-styled arcade classic built with HTML5 Canvas, Web Audio API sound effects, touch controls, mobile support, and fireworks celebration effects.
   image: /images/frogger-screenshot.webp
+  alt: Neon Frogger arcade game with a frog crossing a road and river
+  width: 1280
+  height: 720
   tech:
     - Canvas
     - JavaScript
@@ -20,6 +26,9 @@
 - title: NurtureDesk CRM
   description: A customer relationship manager for small teams to track leads, follow-ups, and client notes in one place. Includes a pipeline view and reminders so no contact falls through the cracks.
   image: /images/crm-screenshot.webp
+  alt: NurtureDesk CRM dashboard showing a sales pipeline and client notes
+  width: 916
+  height: 886
   tech:
     - Web App
     - CRM
@@ -29,6 +38,9 @@
 - title: Company Website
   description: The public website for Tri-State Media Group, a web, app, and multimedia studio. Features a dark, modern landing page with a clear hero message, service highlights, and calls to action that lead visitors to services and examples.
   image: /images/company-website-screenshot.webp
+  alt: Tri-State Media Group website landing page with hero message and services
+  width: 901
+  height: 886
   tech:
     - Web Development
     - Web Apps

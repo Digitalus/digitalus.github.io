@@ -34,6 +34,11 @@
 
     var audioCtx = null;
 
+    /**
+     * Returns the shared Web Audio context, creating it on first use and
+     * resuming it if the browser suspended it (browsers require a user gesture first).
+     * @returns {AudioContext}
+     */
     function getAudio() {
         if (!audioCtx) {
             audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -42,6 +47,15 @@
         return audioCtx;
     }
 
+    /**
+     * Plays a short synthesized note that fades out, optionally sliding in pitch.
+     * Does nothing while sound is muted.
+     * @param {number} freq - Starting frequency in Hz.
+     * @param {number} dur - Length in seconds.
+     * @param {string} type - Oscillator wave shape (sine, square, sawtooth, triangle).
+     * @param {number} vol - Starting volume from 0 to 1.
+     * @param {number} [slideTo] - Frequency in Hz to glide toward over the note.
+     */
     function tone(freq, dur, type, vol, slideTo) {
         if (muted) return;
         var a = getAudio();
@@ -57,6 +71,13 @@
         osc.stop(a.currentTime + dur);
     }
 
+    /**
+     * Plays a burst of low-pass filtered noise that decays quickly (used for the splat sound).
+     * Does nothing while sound is muted.
+     * @param {number} dur - Length in seconds.
+     * @param {number} vol - Volume from 0 to 1.
+     * @param {number} cutoff - Low-pass filter cutoff in Hz; lower values sound more muffled.
+     */
     function noise(dur, vol, cutoff) {
         if (muted) return;
         var a = getAudio();
@@ -76,17 +97,22 @@
         src.start();
     }
 
+    // Sound effects for game events, all synthesized with the helpers above.
     var sounds = {
+        // Quick rising chirp when the frog hops.
         hop: function () { tone(360, 0.11, 'sine', 0.14, 620); },
+        // Muffled thud with a falling tone when the frog is hit or falls in the river.
         splat: function () {
             noise(0.35, 0.5, 700);
             tone(150, 0.3, 'sine', 0.18, 45);
         },
+        // Rising four-note fanfare when the frog reaches the HOME strip.
         goal: function () {
             [523, 659, 784, 1047].forEach(function (freq, i) {
                 setTimeout(function () { tone(freq, 0.18, 'triangle', 0.14); }, i * 110);
             });
         },
+        // Slow falling four-note tone when the last life is lost.
         over: function () {
             [392, 349, 311, 262].forEach(function (freq, i) {
                 setTimeout(function () { tone(freq, 0.3, 'triangle', 0.14); }, i * 260);
@@ -94,11 +120,17 @@
         }
     };
 
+    /** Updates the Sound button label and its aria-pressed state to match the muted setting. */
     function updateSoundButton() {
         soundBtn.textContent = 'Sound: ' + (muted ? 'Off' : 'On');
         soundBtn.setAttribute('aria-pressed', String(!muted));
     }
 
+    /**
+     * Builds the moving cars (road rows) and logs (river rows) for a level.
+     * Higher levels add more cars per road lane, fewer and shorter logs per river lane.
+     * @param {number} level - The current level, starting at 1.
+     */
     function buildLanes(level) {
         var roadCount = Math.min(4, 2 + Math.floor((level - 1) / 2));
         var logCount = Math.max(2, 3 - Math.floor((level - 1) / 3));
@@ -116,14 +148,22 @@
         });
     }
 
+    /**
+     * Wraps a horizontal position so objects leaving one side of the board
+     * re-enter from the other side.
+     * @param {number} x - Position in canvas pixels.
+     * @returns {number} Position within the looping range.
+     */
     function wrap(x) {
         return ((x + TILE) % LOOP + LOOP) % LOOP - TILE;
     }
 
+    /** Puts the frog back on the start tile, facing up. */
     function resetFrog() {
         state.frog = { x: START_COL * TILE, row: START_ROW, angle: 0, hop: 0 };
     }
 
+    /** Starts a fresh game: full lives, zero score, level 1, and a clean board. */
     function newGame() {
         state = { lives: LIVES, score: 0, level: 1, speed: 1, over: false };
         particles = [];
@@ -132,6 +172,7 @@
         resetFrog();
     }
 
+    /** Saves the score as the new best score (in localStorage) if it beats the old one. */
     function setBest() {
         if (state.score > best) {
             best = state.score;
@@ -139,6 +180,7 @@
         }
     }
 
+    /** Costs the frog one life. Ends the game on the last life, otherwise restarts the frog at the start. */
     function die() {
         if (state.over) return;
         state.lives--;
@@ -152,6 +194,13 @@
         }
     }
 
+    /**
+     * Moves the frog one tile, turns it to face that way, and starts the hop animation.
+     * Moving forward scores points; reaching the top row scores a bonus, raises the level
+     * and speed, and triggers fireworks and the HOME flash.
+     * @param {number} dc - Columns to move (-1 left, 1 right).
+     * @param {number} dr - Rows to move (1 up toward HOME, -1 down).
+     */
     function hop(dc, dr) {
         if (state.over) return;
         var f = state.frog;
@@ -180,6 +229,11 @@
         setBest();
     }
 
+    /**
+     * Creates one firework burst: a ring of particles flying out in random directions.
+     * @param {number} x - Burst center in canvas pixels.
+     * @param {number} y - Burst center in canvas pixels.
+     */
     function spawnBurst(x, y) {
         var colors = ['#ff2bd6', '#39ff14', '#00f0ff', '#fee440', '#ff9f1c'];
         var color = colors[Math.floor(Math.random() * colors.length)];
@@ -195,12 +249,23 @@
         }
     }
 
+    /**
+     * Launches three bursts in a row: one where the frog arrived, then two more
+     * near it along the top strip.
+     * @param {number} x - Where the frog reached the goal, in canvas pixels.
+     * @param {number} y - Vertical position of the first burst.
+     */
     function spawnFireworks(x, y) {
         spawnBurst(x, y);
         setTimeout(function () { spawnBurst(x - 50 + Math.random() * 100, TILE / 2); }, 200);
         setTimeout(function () { spawnBurst(x - 50 + Math.random() * 100, TILE / 2); }, 400);
     }
 
+    /**
+     * Advances the HOME flash timer and firework particles: moves them,
+     * applies gravity, and removes particles that have faded out.
+     * @param {number} dt - Seconds since the last frame.
+     */
     function updateParticles(dt) {
         if (homeFlash > 0) homeFlash = Math.max(0, homeFlash - dt);
         particles.forEach(function (p) {
@@ -212,6 +277,7 @@
         particles = particles.filter(function (p) { return p.life > 0; });
     }
 
+    /** Draws every firework particle as a glowing dot that fades as it ages. */
     function drawParticles() {
         particles.forEach(function (p) {
             ctx.globalAlpha = Math.max(0, p.life / p.max);
@@ -226,10 +292,21 @@
         ctx.shadowBlur = 0;
     }
 
+    /**
+     * Checks whether two horizontal ranges overlap.
+     * @param {{x: number, w: number}} a - First range (left edge and width).
+     * @param {{x: number, w: number}} b - Second range (left edge and width).
+     * @returns {boolean}
+     */
     function overlaps(a, b) {
         return a.x < b.x + b.w && a.x + a.w > b.x;
     }
 
+    /**
+     * Runs one step of the game: moves cars and logs, checks whether the frog was
+     * hit by a car or missed a log, and carries the frog along with the log it rides.
+     * @param {number} dt - Seconds since the last frame.
+     */
     function update(dt) {
         updateParticles(dt);
         if (state.frog && state.frog.hop > 0) state.frog.hop = Math.max(0, state.frog.hop - dt);
@@ -276,6 +353,7 @@
         }
     }
 
+    /** Paints the background: HOME strip, safe grass, road with lane dashes, and river with ripples. */
     function drawGrid() {
         for (var row = 0; row < ROWS; row++) {
             var y = row * TILE;
@@ -317,6 +395,14 @@
         }
     }
 
+    /**
+     * Fills a rectangle with rounded corners using the current fill style.
+     * @param {number} x - Left edge.
+     * @param {number} y - Top edge.
+     * @param {number} w - Width.
+     * @param {number} h - Height.
+     * @param {number} r - Corner radius.
+     */
     function roundRect(x, y, w, h, r) {
         ctx.beginPath();
         ctx.moveTo(x + r, y);
@@ -328,6 +414,7 @@
         ctx.fill();
     }
 
+    /** Draws the glowing cars (with a windshield on the front) and the amber logs. */
     function drawObjects() {
         Object.keys(lanes).forEach(function (row) {
             var lane = lanes[row];
@@ -357,6 +444,10 @@
         });
     }
 
+    /**
+     * Draws the frog as a top-down frog with a glow. The drawing is rotated to match the
+     * direction of the last hop and stretches briefly while the hop animation plays.
+     */
     function drawFrog() {
         var f = state.frog;
         var cx = f.x + TILE / 2;
@@ -472,6 +563,7 @@
         ctx.restore();
     }
 
+    /** Dims the board and shows the Game over message with the final score. */
     function drawOverlay() {
         ctx.shadowBlur = 0;
         ctx.fillStyle = 'rgba(0,0,0,0.7)';
@@ -486,6 +578,7 @@
         ctx.textAlign = 'start';
     }
 
+    /** Draws one complete frame (board, cars and logs, frog, fireworks, overlay) and updates the score display. */
     function render() {
         ctx.clearRect(0, 0, W, H);
         ctx.shadowBlur = 0;
@@ -502,6 +595,13 @@
     }
 
     var last = 0;
+
+    /**
+     * The game loop, called by the browser before each repaint. Updates the game,
+     * draws it, and schedules the next frame. Time steps are capped so the game
+     * does not jump ahead after the tab was in the background.
+     * @param {number} ts - Timestamp in milliseconds supplied by requestAnimationFrame.
+     */
     function frame(ts) {
         var dt = Math.min((ts - last) / 1000, 0.05);
         last = ts;
@@ -510,6 +610,7 @@
         requestAnimationFrame(frame);
     }
 
+    // Keyboard keys mapped to [columns, rows] hop directions (arrow keys and WASD).
     var KEYS = {
         ArrowUp: [0, 1], w: [0, 1], W: [0, 1],
         ArrowDown: [0, -1], s: [0, -1], S: [0, -1],
@@ -517,6 +618,7 @@
         ArrowRight: [1, 0], d: [1, 0], D: [1, 0]
     };
 
+    // Handles key presses: Enter, Space, or R restarts after game over; arrows and WASD hop the frog.
     document.addEventListener('keydown', function (e) {
         getAudio();
         if (state.over && (e.key === 'Enter' || e.key === ' ' || e.key === 'r' || e.key === 'R')) {
@@ -531,8 +633,10 @@
         }
     });
 
+    // On-screen arrow buttons mapped to the same hop directions as the keyboard.
     var DIRS = { up: [0, 1], down: [0, -1], left: [-1, 0], right: [1, 0] };
 
+    // Wires up the touch arrow pad: tapping a button hops the frog, or restarts after game over.
     document.querySelectorAll('.pad__btn').forEach(function (btn) {
         btn.addEventListener('pointerdown', function (e) {
             e.preventDefault();
@@ -546,13 +650,17 @@
         });
     });
 
+    // Where a touch or click on the board began, used to detect swipes.
     var touchStart = null;
 
+    // Remembers where a touch or click on the board started, and unlocks audio.
     canvas.addEventListener('pointerdown', function (e) {
         getAudio();
         touchStart = { x: e.clientX, y: e.clientY };
     });
 
+    // Turns a swipe on the board into a hop in that direction; a short tap hops forward.
+    // After game over, any tap starts a new game.
     canvas.addEventListener('pointerup', function (e) {
         if (!touchStart) return;
         var dx = e.clientX - touchStart.x;
@@ -571,11 +679,13 @@
         }
     });
 
+    // "New game" button: starts over but keeps the saved best score.
     restartBtn.addEventListener('click', function () {
         newGame();
         canvas.focus();
     });
 
+    // "Reset progress" button: clears the saved best score and starts a new game.
     resetBtn.addEventListener('click', function () {
         best = 0;
         localStorage.removeItem('frogger-best');
@@ -583,6 +693,7 @@
         canvas.focus();
     });
 
+    // Sound button: toggles mute and remembers the choice in localStorage.
     soundBtn.addEventListener('click', function () {
         muted = !muted;
         localStorage.setItem('frogger-muted', String(muted));
@@ -590,6 +701,7 @@
         if (!muted) getAudio();
     });
 
+    // Start-up: sync the Sound button, set up the first game, and start the game loop.
     updateSoundButton();
     newGame();
     requestAnimationFrame(function (ts) {

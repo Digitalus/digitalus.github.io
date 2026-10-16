@@ -11,6 +11,7 @@
 
   const MAX_DIGITS = 12;
 
+  /** Shows the current value on the screen and the pending operation in the history line. */
   function updateDisplay() {
     display.textContent = current;
     history.textContent = previous !== null && operator
@@ -18,6 +19,11 @@
       : '';
   }
 
+  /**
+   * Adds a digit to the current number. Starts a fresh number after a result,
+   * replaces a lone zero, and stops at the maximum digit count.
+   * @param {string} digit - A single character from '0' to '9'.
+   */
   function inputDigit(digit) {
     if (justEvaluated) {
       current = digit;
@@ -29,6 +35,7 @@
     }
   }
 
+  /** Adds a decimal point to the current number, ignoring it if one is already present. */
   function inputDecimal() {
     if (justEvaluated) {
       current = '0.';
@@ -40,6 +47,7 @@
     }
   }
 
+  /** Resets the calculator to its starting state (C button and Esc key). */
   function clearAll() {
     current = '0';
     previous = null;
@@ -47,15 +55,24 @@
     justEvaluated = false;
   }
 
+  /** Flips the current number between positive and negative (zero is left alone). */
   function toggleSign() {
     if (current === '0') return;
     current = current.startsWith('-') ? current.slice(1) : '-' + current;
   }
 
+  /** Converts the current number to a percentage by dividing it by 100. */
   function applyPercent() {
     current = String(parseFloat(current) / 100);
   }
 
+  /**
+   * Applies an arithmetic operator to two numbers.
+   * @param {string} a - Left operand.
+   * @param {string} b - Right operand.
+   * @param {string} op - One of + − × ÷.
+   * @returns {number} The result, or NaN when dividing by zero.
+   */
   function compute(a, b, op) {
     const x = parseFloat(a);
     const y = parseFloat(b);
@@ -68,6 +85,12 @@
     }
   }
 
+  /**
+   * Turns a result into display text: rounds away floating point noise,
+   * shows 'Error' for NaN, and switches to exponential notation when too long.
+   * @param {number} num - The computed result.
+   * @returns {string}
+   */
   function formatResult(num) {
     if (Number.isNaN(num)) return 'Error';
     let str = String(Math.round(num * 1e10) / 1e10);
@@ -77,6 +100,11 @@
     return str;
   }
 
+  /**
+   * Stores the chosen operator. If an operation is already pending, it is
+   * calculated first so operators can be chained (for example 2 + 3 × 4).
+   * @param {string} op - One of + − × ÷.
+   */
   function chooseOperator(op) {
     if (operator && !justEvaluated) {
       const result = compute(previous, current, operator);
@@ -87,6 +115,7 @@
     justEvaluated = true; // next digit starts fresh
   }
 
+  /** Calculates the pending operation and shows the result (= button and Enter key). */
   function evaluate() {
     if (operator === null || previous === null) return;
     const result = compute(previous, current, operator);
@@ -96,6 +125,7 @@
     justEvaluated = true;
   }
 
+  // Handles on-screen button clicks, using the data-* attributes to decide what each key does.
   keys.addEventListener('click', (e) => {
     const btn = e.target.closest('.key');
     if (!btn) return;
@@ -119,6 +149,7 @@
     updateDisplay();
   });
 
+  // Handles keyboard input: digits, decimal point, operators, Enter/=, Backspace, and Esc.
   window.addEventListener('keydown', (e) => {
     if (e.key >= '0' && e.key <= '9') {
       inputDigit(e.key);

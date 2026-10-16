@@ -4,8 +4,33 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="index, follow">
-    <meta name="description" content="{{ page.description | default: site.description | strip_html | strip_newlines | escape }}">
-    <title>{% if page.title %}{{ page.title }} | {% endif %}{{ site.title }}</title>
+    {% assign seo_title = site.title | append: " | Web Developer Portfolio & Blog" %}
+    {% if page.url != "/" and page.title %}{% assign seo_title = page.title | append: " | " | append: site.title %}{% endif %}
+    {% assign seo_desc = page.description | default: site.description | strip_html | strip_newlines | escape %}
+    {% assign seo_url = page.url | replace: "index.html", "" | absolute_url %}
+    {% assign seo_image = "/images/frogger-screenshot.webp" | absolute_url %}
+    <meta name="description" content="{{ seo_desc }}">
+    <meta name="author" content="{{ site.author }}">
+    <title>{{ seo_title | escape }}</title>
+    <link rel="canonical" href="{{ seo_url }}">
+    <meta property="og:site_name" content="{{ site.title }}">
+    <meta property="og:locale" content="en_US">
+    <meta property="og:type" content="{% if page.layout == 'post' %}article{% else %}website{% endif %}">
+    <meta property="og:title" content="{{ seo_title | escape }}">
+    <meta property="og:description" content="{{ seo_desc }}">
+    <meta property="og:url" content="{{ seo_url }}">
+    <meta property="og:image" content="{{ seo_image }}">
+    <meta property="og:image:alt" content="Screenshot of the neon Frogger arcade game built by {{ site.author }}">
+    {% if page.layout == 'post' %}<meta property="article:published_time" content="{{ page.date | date_to_xmlschema }}">
+    <meta property="article:author" content="{{ site.author }}">
+    {% endif %}<meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ seo_title | escape }}">
+    <meta name="twitter:description" content="{{ seo_desc }}">
+    <meta name="twitter:image" content="{{ seo_image }}">
+    <script type="application/ld+json">
+    {% if page.layout == 'post' %}{"@context":"https://schema.org","@type":"BlogPosting","headline":{{ page.title | jsonify }},"description":{{ seo_desc | jsonify }},"datePublished":"{{ page.date | date_to_xmlschema }}","dateModified":"{{ page.date | date_to_xmlschema }}","mainEntityOfPage":"{{ seo_url }}","image":"{{ seo_image }}","author":{"@type":"Person","name":{{ site.author | jsonify }},"url":"{{ site.url }}/"},"publisher":{"@type":"Person","name":{{ site.title | jsonify }}}}
+    {% else %}{"@context":"https://schema.org","@type":"WebSite","name":{{ site.title | jsonify }},"url":"{{ site.url }}/","description":{{ seo_desc | jsonify }},"author":{"@type":"Person","name":{{ site.author | jsonify }}}}{% endif %}
+    </script>
     <link rel="icon" href="{{ '/favicon.ico' | relative_url }}" sizes="any">
     <link rel="icon" href="{{ '/images/favicon.svg' | relative_url }}" type="image/svg+xml">
     <link rel="icon" type="image/png" sizes="32x32" href="{{ '/favicon-32x32.png' | relative_url }}">
