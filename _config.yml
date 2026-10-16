@@ -15,3 +15,4 @@ exclude:
   - package.json
   - package-lock.json
   - css/tailwind.input.css
+  - src

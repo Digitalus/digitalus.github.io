@@ -4,7 +4,9 @@
   "description": "Personal website for Digitalus the developer…",
   "main": "index.js",
   "scripts": {
+    "build": "npm run build:css && npm run build:js",
     "build:css": "tailwindcss -i ./css/tailwind.input.css -o ./css/tailwind.css --minify",
+    "build:js": "terser src/apps/calc/script.js -c -m -o apps/calc/script.js && terser src/apps/frogger/script.js -c -m -o apps/frogger/script.js",
     "watch:css": "tailwindcss -i ./css/tailwind.input.css -o ./css/tailwind.css --watch"
   },
   "repository": {
@@ -13,7 +15,8 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "UNLICENSED",
+  "private": true,
   "type": "commonjs",
   "bugs": {
     "url": "https://github.com/digitalus/digitalus.github.io/issues"
@@ -22,6 +25,7 @@
   "devDependencies": {
     "@tailwindcss/cli": "^4.3.3",
     "@tailwindcss/typography": "^0.5.20",
-    "tailwindcss": "^4.3.3"
+    "tailwindcss": "^4.3.3",
+    "terser": "^5.51.2"
   }
 }

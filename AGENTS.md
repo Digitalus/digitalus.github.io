@@ -22,11 +22,12 @@ A personal portfolio and blog for **Digitalus Maximus**, hosted on **GitHub Page
 | `js/scripts.js` | Theme toggle (saved in `localStorage`) and mobile menu |
 | `js/main.js` | Empty placeholder |
 | `images/` | WebP project screenshots and `favicon.svg` |
-| `apps/calc/` | Standalone calculator (own HTML, CSS, JS) |
-| `apps/frogger/` | Standalone Frogger game (own HTML, CSS, JS) |
+| `apps/calc/` | Standalone calculator (own HTML, CSS; `script.js` is **minified output**) |
+| `apps/frogger/` | Standalone Frogger game (own HTML, CSS; `script.js` is **minified output**) |
+| `src/apps/*/script.js` | **Readable source** for the app scripts. Edit these, not `apps/*/script.js`. Excluded from the published site |
 | `sitemap.xml` | Liquid-generated sitemap (see below) |
 | `robots.txt` | Allows all crawlers and points to the sitemap |
-| `package.json` | Tailwind CLI scripts only (no runtime dependencies) |
+| `package.json` | Build scripts for the Tailwind CLI and Terser (dev dependencies only) |
 
 ## Commands
 
@@ -38,6 +39,8 @@ bundle install              # first time only
 bundle exec jekyll serve    # preview at http://localhost:4000
 npm install                 # first time only
 npm run build:css           # compile css/tailwind.css (minified)
+npm run build:js            # minify src/apps/*/script.js into apps/*/script.js with Terser
+npm run build               # both of the above
 npm run watch:css           # rebuild on change while editing
 ```
 
@@ -54,14 +57,15 @@ npm run watch:css           # rebuild on change while editing
 - **`node_modules`, `package*.json`, and `css/tailwind.input.css` are excluded** from the built site in `_config.yml`.
 - **Contact email** is set once in `_config.yml` (`email`) and is used by the homepage contact text and the footer. The old placeholders (title, years of experience, email) have all been filled in.
 - **The contact form is not functional.** It posts to `submit.php`, which does not exist, and GitHub Pages cannot run PHP. A mailto link is the fallback. The URL was left as is on purpose.
-- **License:** GNU GPL v3, see `LICENSE`.
+- **Edit app JavaScript in `src/apps/<name>/script.js`**, then run `npm run build:js` and **commit the generated `apps/<name>/script.js`**. Never hand-edit the minified output, because the next build overwrites it. When adding a new app script, add it to the `build:js` script in `package.json`. The source files carry a `/*! Copyright ... */` header that Terser preserves.
+- **License:** all rights reserved, see `LICENSE`. The repo was previously GPL v3 and was changed to all rights reserved. `package.json` is marked `"license": "UNLICENSED"` and `"private": true`. Do not add open-source license text or headers to new files.
 
 ## Adding or Modifying Content
 
 - **Blog post:** add `_posts/YYYY-MM-DD-title.md` with front matter `layout: post`, `title`, `date`, `description`, and `tags`. The homepage shows the 6 newest, the blog page shows all, and the sitemap picks them up automatically. Do not use future dates, since Jekyll skips them.
 - **Project card:** add an entry to `_data/projects.yml`. Put the screenshot in `images/` as WebP.
 - **Images:** use WebP and keep them small. Screenshots are 12 to 90 KB.
-- **New app:** create `apps/<name>/` with its own `index.html`, `style.css`, and `script.js`. Apps do not use the Jekyll layout, so copy these from the existing apps: the `<meta name="robots" content="index, follow">` tag, the animated `.lines` background markup and CSS, and a Home link to `https://digitalus.github.io/`. Then add the app to `sitemap.xml` by hand and add a card to `_data/projects.yml`.
+- **New app:** create `apps/<name>/` with its own `index.html` and `style.css`, and put the script source in `src/apps/<name>/script.js` (minified to `apps/<name>/script.js` by `npm run build:js`). Apps do not use the Jekyll layout, so copy these from the existing apps: the `<meta name="robots" content="index, follow">` tag, the favicon and manifest `<link>` tags, the animated `.lines` background markup and CSS, and a Home link to `https://digitalus.github.io/`. Then add the app to `sitemap.xml` by hand and add a card to `_data/projects.yml`.
 
 ## SEO
 
