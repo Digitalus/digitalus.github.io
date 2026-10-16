@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="index, follow">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/images/favicon.svg" type="image/svg+xml">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="theme-color" content="#13294B">
+<title>Play Snake Online Free | Neon Arcade Game | Digitalus Maximus</title>
+<meta name="description" content="Play Snake online for free. A neon retro arcade game where the snake wraps around the screen, with sound effects, swipe and keyboard controls, and rising speed. Works on desktop and mobile.">
+<meta name="author" content="Digitalus">
+<link rel="canonical" href="https://digitalus.github.io/apps/snake/">
+<meta property="og:site_name" content="Digitalus Maximus">
+<meta property="og:locale" content="en_US">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Play Snake Online Free | Neon Arcade Game">
+<meta property="og:description" content="A neon retro Snake game with wrap-around edges, sound, swipe and keyboard controls, and rising speed. Free to play on desktop and mobile.">
+<meta property="og:url" content="https://digitalus.github.io/apps/snake/">
+<meta property="og:image" content="https://digitalus.github.io/images/snake-screenshot.webp">
+<meta property="og:image:alt" content="Neon Snake arcade game with a glowing green snake chasing pink food">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Play Snake Online Free | Neon Arcade Game">
+<meta name="twitter:description" content="A neon retro Snake game with wrap-around edges, sound, swipe and keyboard controls, and rising speed. Free to play on desktop and mobile.">
+<meta name="twitter:image" content="https://digitalus.github.io/images/snake-screenshot.webp">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"VideoGame","name":"Snake","url":"https://digitalus.github.io/apps/snake/","description":"A neon retro Snake arcade game with wrap-around edges, sound, swipe and keyboard controls, and rising speed.","genre":"Arcade","gamePlatform":"Web browser","playMode":"SinglePlayer","image":"https://digitalus.github.io/images/snake-screenshot.webp","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"author":{"@type":"Person","name":"Digitalus"}}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@900&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="lines">
+    <div class="line"></div>
+    <div class="line"></div>
+    <div class="line"></div>
+    <div class="line"></div>
+    <div class="line"></div>
+    <div class="line"></div>
+    <div class="line"></div>
+    <div class="line"></div>
+    <div class="line"></div>
+    <div class="line"></div>
+  </div>
+
+  <main class="game" aria-label="Snake game">
+    <header class="game__header">
+      <h1 class="game__title"><svg class="game__icon" viewBox="0 0 64 64" aria-hidden="true"><path d="M10 50 H40 a10 10 0 0 0 0-20 H24 a8 8 0 0 1 0-16 H50" fill="none" stroke="#39ff14" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="50" cy="14" r="3" fill="#111"/></svg><span class="game__name">Snake</span></h1>
+      <div class="game__stats">
+        <span>Score <strong id="score">0</strong></span>
+        <span>Level <strong id="level">1</strong></span>
+        <span>Best <strong id="best">0</strong></span>
+      </div>
+    </header>
+
+    <canvas id="game" width="480" height="480" role="img" aria-label="Snake game board: steer the snake to eat the food without running into yourself"></canvas>
+
+    <div class="pad" aria-label="Touch controls">
+      <button type="button" class="pad__btn pad__up" data-dir="up" aria-label="Up">&#9650;</button>
+      <button type="button" class="pad__btn pad__left" data-dir="left" aria-label="Left">&#9664;</button>
+      <button type="button" class="pad__btn pad__down" data-dir="down" aria-label="Down">&#9660;</button>
+      <button type="button" class="pad__btn pad__right" data-dir="right" aria-label="Right">&#9654;</button>
+    </div>
+
+    <div class="game__controls">
+      <p>Arrow keys or WASD to steer, Space or P to pause. Eat the food to grow and speed up. The snake wraps around the edges, but running into itself ends the game.</p>
+      <div class="game__buttons">
+        <button id="sound" type="button" aria-pressed="true">Sound: On</button>
+        <button id="pause" type="button">Pause</button>
+        <button id="restart" type="button">New game</button>
+        <button id="reset" type="button">Reset progress</button>
+        <a class="game__home" href="https://digitalus.github.io/">Home</a>
+      </div>
+    </div>
+  </main>
+
+<script src="script.js"></script>
+</body>
+</html>

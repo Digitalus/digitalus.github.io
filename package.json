@@ -6,8 +6,8 @@
   "scripts": {
     "build": "npm run build:css && npm run build:css:min && npm run build:js",
     "build:css": "tailwindcss -i ./css/tailwind.input.css -o ./css/tailwind.css --minify",
-    "build:css:min": "cleancss -o css/styles.css src/css/styles.css && cleancss -o apps/calc/style.css src/apps/calc/style.css && cleancss -o apps/frogger/style.css src/apps/frogger/style.css",
-    "build:js": "terser src/apps/calc/script.js -c -m -o apps/calc/script.js && terser src/apps/frogger/script.js -c -m -o apps/frogger/script.js",
+    "build:css:min": "cleancss -o css/styles.css src/css/styles.css && cleancss -o apps/calc/style.css src/apps/calc/style.css && cleancss -o apps/frogger/style.css src/apps/frogger/style.css && cleancss -o apps/snake/style.css src/apps/snake/style.css",
+    "build:js": "terser src/apps/calc/script.js -c -m -o apps/calc/script.js && terser src/apps/frogger/script.js -c -m -o apps/frogger/script.js && terser src/apps/snake/script.js -c -m -o apps/snake/script.js",
     "watch:css": "tailwindcss -i ./css/tailwind.input.css -o ./css/tailwind.css --watch"
   },
   "repository": {

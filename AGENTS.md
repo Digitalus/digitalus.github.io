@@ -24,6 +24,7 @@ A personal portfolio and blog for **Digitalus Maximus**, hosted on **GitHub Page
 | `images/` | WebP project screenshots and `favicon.svg` |
 | `apps/calc/` | Standalone calculator (own HTML, CSS; `script.js` is **minified output**) |
 | `apps/frogger/` | Standalone Frogger game (own HTML, CSS; `script.js` is **minified output**) |
+| `apps/snake/` | Standalone Snake game (own HTML, CSS; `script.js` and `style.css` are **minified output**) |
 | `src/apps/*/script.js`, `src/apps/*/style.css` | **Readable source** for the app scripts and styles. Edit these, not the minified `apps/*/` files. Excluded from the published site |
 | `sitemap.xml` | Liquid-generated sitemap (see below) |
 | `robots.txt` | Allows all crawlers and points to the sitemap |
@@ -88,3 +89,8 @@ npm run watch:css           # rebuild on change while editing
 - Sound is synthesized with Web Audio (no audio files), with a Sound on/off toggle saved in `localStorage`. The best score is saved under `frogger-best`.
 - Difficulty rises each time the frog reaches the top: faster lanes, more cars, and narrower logs at higher levels.
 - Reaching the top strip triggers fireworks and flashes the word HOME.
+
+**Snake (`apps/snake/`)**
+- HTML5 canvas game with the same neon styling, animated background, and controls layout as Frogger (it reuses Frogger's stylesheet).
+- The snake wraps around the edges and dies only when it hits itself. Speed increases every 5 foods.
+- Controls: arrow keys or WASD, Space or P to pause, on-screen arrow pad, and swipe on the board. Sound is synthesized with Web Audio and saved under `snake-muted`. The best score is saved under `snake-best`.

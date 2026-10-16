@@ -23,6 +23,19 @@
     - Game Dev
   link: /apps/frogger/
 
+- title: Snake Arcade Game
+  description: A neon retro Snake game where the snake wraps around the edges and speeds up as it eats. Includes synthesized sound effects, a saved best score, and keyboard, swipe, and on-screen controls for desktop and mobile.
+  image: /images/snake-screenshot.webp
+  alt: Neon Snake arcade game with a glowing green snake chasing food on a dark grid
+  width: 1280
+  height: 720
+  tech:
+    - Canvas
+    - JavaScript
+    - Web Audio
+    - Game Dev
+  link: /apps/snake/
+
 - title: NurtureDesk CRM
   description: A customer relationship manager for small teams to track leads, follow-ups, and client notes in one place. Includes a pipeline view and reminders so no contact falls through the cracks.
   image: /images/crm-screenshot.webp
