@@ -249,3 +249,9 @@ canvas {
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
+
+.game__note {
+  font-size: 0.8rem;
+  color: #9ca3af;
+  text-align: center;
+}

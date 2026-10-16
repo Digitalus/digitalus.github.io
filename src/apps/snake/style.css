@@ -250,3 +250,9 @@ canvas {
 .game__controls button:hover {
   opacity: 0.9;
 }
+
+.game__note {
+  font-size: 0.8rem;
+  color: #9ca3af;
+  text-align: center;
+}
