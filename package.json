@@ -4,8 +4,9 @@
   "description": "Personal website for Digitalus the developer…",
   "main": "index.js",
   "scripts": {
-    "build": "npm run build:css && npm run build:js",
+    "build": "npm run build:css && npm run build:css:min && npm run build:js",
     "build:css": "tailwindcss -i ./css/tailwind.input.css -o ./css/tailwind.css --minify",
+    "build:css:min": "cleancss -o css/styles.css src/css/styles.css && cleancss -o apps/calc/style.css src/apps/calc/style.css && cleancss -o apps/frogger/style.css src/apps/frogger/style.css",
     "build:js": "terser src/apps/calc/script.js -c -m -o apps/calc/script.js && terser src/apps/frogger/script.js -c -m -o apps/frogger/script.js",
     "watch:css": "tailwindcss -i ./css/tailwind.input.css -o ./css/tailwind.css --watch"
   },
@@ -25,6 +26,7 @@
   "devDependencies": {
     "@tailwindcss/cli": "^4.3.3",
     "@tailwindcss/typography": "^0.5.20",
+    "clean-css-cli": "^5.6.3",
     "tailwindcss": "^4.3.3",
     "terser": "^5.51.2"
   }

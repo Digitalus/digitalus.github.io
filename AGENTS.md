@@ -16,7 +16,7 @@ A personal portfolio and blog for **Digitalus Maximus**, hosted on **GitHub Page
 | `_includes/` | `header.html` (sticky nav, theme toggle), `footer.html`, `post-card.html` |
 | `_data/projects.yml` | Project cards on the homepage (title, description, image, tech tags, link) |
 | `_posts/` | Blog posts, `YYYY-MM-DD-title.md` |
-| `css/styles.css` | Theme CSS variables (light/dark), animated background lines, prose colors |
+| `src/css/styles.css` | **Readable source** for `css/styles.css` (minified output). Theme CSS variables (light/dark), animated background lines, prose colors |
 | `css/tailwind.input.css` | Tailwind v4 input: `@theme` color mapping, typography plugin |
 | `css/tailwind.css` | **Compiled** Tailwind output, committed to the repo |
 | `js/scripts.js` | Theme toggle (saved in `localStorage`) and mobile menu |
@@ -24,7 +24,7 @@ A personal portfolio and blog for **Digitalus Maximus**, hosted on **GitHub Page
 | `images/` | WebP project screenshots and `favicon.svg` |
 | `apps/calc/` | Standalone calculator (own HTML, CSS; `script.js` is **minified output**) |
 | `apps/frogger/` | Standalone Frogger game (own HTML, CSS; `script.js` is **minified output**) |
-| `src/apps/*/script.js` | **Readable source** for the app scripts. Edit these, not `apps/*/script.js`. Excluded from the published site |
+| `src/apps/*/script.js`, `src/apps/*/style.css` | **Readable source** for the app scripts and styles. Edit these, not the minified `apps/*/` files. Excluded from the published site |
 | `sitemap.xml` | Liquid-generated sitemap (see below) |
 | `robots.txt` | Allows all crawlers and points to the sitemap |
 | `package.json` | Build scripts for the Tailwind CLI and Terser (dev dependencies only) |
@@ -40,7 +40,8 @@ bundle exec jekyll serve    # preview at http://localhost:4000
 npm install                 # first time only
 npm run build:css           # compile css/tailwind.css (minified)
 npm run build:js            # minify src/apps/*/script.js into apps/*/script.js with Terser
-npm run build               # both of the above
+npm run build:css:min       # minify src CSS into css/styles.css and apps/*/style.css (clean-css)
+npm run build               # all of the above
 npm run watch:css           # rebuild on change while editing
 ```
 

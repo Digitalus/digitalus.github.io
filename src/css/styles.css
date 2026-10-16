@@ -1,0 +1,163 @@
+/* Theme variables. Tailwind reads these through tailwind.config in _layouts/default.html. */
+:root {
+    --gray-50: 249 250 251;
+    --gray-100: 243 244 246;
+    --gray-200: 229 231 235;
+    --gray-300: 209 213 219;
+    --gray-400: 156 163 175;
+    --gray-500: 107 114 128;
+    --gray-600: 75 85 99;
+    --gray-700: 55 65 81;
+    --gray-800: 31 41 55;
+    --gray-900: 17 24 39;
+
+    --navy: 19 41 75;
+    --sky: 123 175 212;
+    --accent: 255 122 0;
+    --light: 248 250 252;
+
+    --canvas: var(--gray-50);
+    --surface: 255 255 255;
+    --ink: var(--gray-900);
+    --muted: var(--gray-500);
+    --line: var(--gray-200);
+    --brand: var(--navy);
+    --title-end: var(--navy);
+}
+
+[data-theme="dark"] {
+    --canvas: 11 15 23;
+    --surface: 19 26 38;
+    --ink: 229 231 235;
+    --muted: 156 163 175;
+    --line: 45 55 72;
+    --brand: var(--sky);
+    --title-end: var(--light);
+    --accent: 255 146 51;
+}
+
+html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 5rem;
+}
+
+.lines {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: -10;
+  margin: auto;
+  width: 90vw;
+  display: flex;
+  justify-content: space-between;
+  pointer-events: none;
+}
+
+.line {
+  position: relative;
+  width: 1px;
+  height: 100%;
+  overflow: hidden;
+}
+
+.line::after {
+  content: '';
+  display: block;
+  position: absolute;
+  height: 15vh;
+  width: 100%;
+  top: -50%;
+  left: 0;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, #ffffff 75%, #ffffff 100%);
+  animation: drop 7s 0s infinite;
+  animation-fill-mode: forwards;
+  animation-timing-function: cubic-bezier(0.4, 0.26, 0, 0.97);
+}
+
+.line:nth-child(1)::after {
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, #FF4500 75%, #FF4500 100%);
+  animation-delay: 0.5s;
+}
+
+.line:nth-child(2)::after {
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, #32CD32 75%, #32CD32 100%);
+  animation-delay: 1s;
+}
+
+.line:nth-child(3)::after {
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, #1E90FF 75%, #1E90FF 100%);
+  animation-delay: 1.5s;
+}
+
+.line:nth-child(4)::after {
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, #FFD700 75%, #FFD700 100%);
+  animation-delay: 2s;
+}
+
+.line:nth-child(5)::after {
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, #8A2BE2 75%, #8A2BE2 100%);
+  animation-delay: 2.5s;
+}
+
+.line:nth-child(6)::after {
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, #20B2AA 75%, #20B2AA 100%);
+  animation-delay: 3s;
+}
+
+.line:nth-child(7)::after {
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, #DC143C 75%, #DC143C 100%);
+  animation-delay: 3.5s;
+}
+
+.line:nth-child(8)::after {
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, #00FA9A 75%, #00FA9A 100%);
+  animation-delay: 4s;
+}
+
+.line:nth-child(9)::after {
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, #FF1493 75%, #FF1493 100%);
+  animation-delay: 4.5s;
+}
+
+.line:nth-child(10)::after {
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, #00BFFF 75%, #00BFFF 100%);
+  animation-delay: 5s;
+}
+
+@keyframes drop {
+  0% {
+    top: -50%;
+  }
+  100% {
+    top: 110%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .line::after {
+    animation: none;
+    top: 20%;
+  }
+}
+
+
+/* Blog post body colors follow the theme variables. */
+.prose.post-content {
+    --tw-prose-body: rgb(var(--ink));
+    --tw-prose-headings: rgb(var(--ink));
+    --tw-prose-lead: rgb(var(--muted));
+    --tw-prose-links: rgb(var(--brand));
+    --tw-prose-bold: rgb(var(--ink));
+    --tw-prose-counters: rgb(var(--muted));
+    --tw-prose-bullets: rgb(var(--muted));
+    --tw-prose-quotes: rgb(var(--ink));
+    --tw-prose-quote-borders: rgb(var(--line));
+    --tw-prose-hr: rgb(var(--line));
+    --tw-prose-th-borders: rgb(var(--line));
+    --tw-prose-td-borders: rgb(var(--line));
+    --tw-prose-code: rgb(var(--ink));
+    --tw-prose-pre-bg: rgb(var(--line));
+    --tw-prose-pre-code: rgb(var(--ink));
+}
